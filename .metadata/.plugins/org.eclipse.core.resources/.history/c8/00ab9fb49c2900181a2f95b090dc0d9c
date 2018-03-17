@@ -12,7 +12,7 @@ public class testdriver2 {
 	 */
 	public static void displayMenu()
 	{
-		 System.out.println("        Welcome to UUber System built by me    ");
+		 System.out.println("        Welcome to UUber System     ");
     	 System.out.println("1. search a course by cname and dname:");
     	 System.out.println("2. enter your own query:");
     	 System.out.println("3. exit:");
