@@ -1,2 +1,6 @@
 # git ignore file
-.metadata
+.metadata/.mylyn
+.metadata/.plugins
+.metadata/.lock
+.metadata/.log
+.metadata/version.ini
