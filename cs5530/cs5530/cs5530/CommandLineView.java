@@ -87,7 +87,7 @@ public class CommandLineView {
 	            			 System.out.println(isDriver);
 	            		 if(isDriver != null)
 	            		 {
-	            			if(controller.setNewUser(username, password, name, address, phone, isDriver, con.stmt))
+	            			if(controller.setNewUser(username, password, name, address, phone, isDriver, con))
 	            			{
 	            				System.out.println("New user successfully registered");
 	            			}
