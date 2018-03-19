@@ -5,3 +5,4 @@
 .metadata/.log
 .metadata/version.ini
 .metadata
+.classpath
