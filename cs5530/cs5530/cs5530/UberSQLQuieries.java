@@ -27,7 +27,10 @@ public class UberSQLQuieries {
 		 	System.out.println("executing "+sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
-	        	return new User(login, password);
+	        	User user = new User(login, password);
+	    	 	if (isDriver)
+	    	 		createDriver(login, user, con);
+	        	return user;
 	        }
 	        else
 	        {
@@ -40,46 +43,32 @@ public class UberSQLQuieries {
 	 		System.out.println(e.getMessage() + "cannot execute the query");
 	 	}
 	 	return null;
-//	 	if (isDriver)
-//	 		createDriver(login, output, stmt);
+
 
 	}
 	
-	private void createDriver(String login, User u, Statement stmt) {
-		String sqldriver = "insert into driver (login) values " + "('" + login +  "')";
+	private void createDriver(String login, User u, Connector2 con) {
 
-		
-		String outputs = "";
-		ResultSet rs = null;
-	 	System.out.println("executing " + sqldriver);
 	 	try {
-			rs= stmt.executeQuery(sqldriver);
-			
-
-			while (rs.next()) {
-				//System.out.print("cname:");
-				outputs += rs.getString("login");
-			}
-			 
-			rs.close();
+	 		String sql = "INSERT INTO driver (login) " +  "VALUES (?)";
+	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, login);
+		 	System.out.println("executing " + sql);
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	u.set_isDriver(true);
+	        }
+	        else
+	        {
+	        	System.out.println("Could not update driver boolean value");
+	        	return;
+	        }
 	 	}
 	 	catch(Exception e)
 	 	{
 	 		System.out.println("cannot execute the query");
 	 	}
-	 	finally
-	 	{
-	 		try{
-		 		if (rs!=null && !rs.isClosed())
-		 			rs.close();
-		 		}
-	 		catch(Exception e)
-	 		{
-	 			System.out.println("cannot close resultset");
-	 		}
-	 	}
 	 	
-	 	u.set_isDriver(true);
 	 	
 	}
 
