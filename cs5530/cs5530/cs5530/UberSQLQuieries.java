@@ -13,6 +13,17 @@ public class UberSQLQuieries {
 		
 	}
 	
+	/**
+	 * 
+	 * @param String: login
+	 * @param String: password
+	 * @param String: name
+	 * @param String: address
+	 * @param String: phone
+	 * @param Boolean: isDriver
+	 * @param Connector2: con
+	 * @return a user that has been inserted into the database
+	 */
 	public User createUser(String login, String password, String name, String address, String phone, boolean isDriver, Connector2 con) {
 		//String sql = "insert into user (login, password, name, address, phone) values " + "('" + login + "', '" + password + "', '" + name + "', '" + address + "', '" + phone + "');";
 			
@@ -47,6 +58,12 @@ public class UberSQLQuieries {
 
 	}
 	
+	/**
+	 * 
+	 * @param login
+	 * @param u
+	 * @param con
+	 */
 	private void createDriver(String login, User u, Connector2 con) {
 
 	 	try {
@@ -70,6 +87,13 @@ public class UberSQLQuieries {
 	 	}
 	}
 	
+	/**
+	 * 
+	 * @param login
+	 * @param password
+	 * @param con
+	 * @return
+	 */
 	public User loginUser(String login, String password, Connector2 con) {
 		User u;
 		ResultSet rs = null;
@@ -118,7 +142,12 @@ public class UberSQLQuieries {
 	}
 	
 
-	
+	/**
+	 * 
+	 * @param login
+	 * @param con
+	 * @return
+	 */
 	private boolean checkIfDriver(String login, Connector2 con) {
 		ResultSet rs = null;
 		String receivedLogin = null;
@@ -156,6 +185,46 @@ public class UberSQLQuieries {
 			return true;
 		}
 		
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param category
+	 * @param model
+	 * @param make
+	 * @param year
+	 * @param owner
+	 * @param con
+	 * @return
+	 */
+	public boolean addNewCar(int vin, String category, String model, String make, int year, String owner, Connector2 con) {
+		try {
+	 		String sql = "INSERT INTO car (vin, category, model, make, year, owner) " +  "VALUES (?, ?, ?, ?, ?, ?)";
+	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, vin);
+	        pstmt.setString(2, category);
+	        pstmt.setString(3, model);
+	        pstmt.setString(4, make);
+	        pstmt.setInt(5, year);
+	        pstmt.setString(6, owner);
+		 	System.out.println("executing " + sql);
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	System.out.println("added a new car");
+	    	 	return true;
+	        }
+	        else
+	        {
+	        	System.out.println("Could not add new car");
+	        	return false;
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query");
+	 	}
 		return false;
 	}
 
