@@ -3,6 +3,7 @@ package cs5530;
 public class User {
 	private String _username;
 	private String _password;
+	private boolean _isDriver;
 	
 	public User(String username, String password) {
 		this.set_username(username);
@@ -23,5 +24,13 @@ public class User {
 
 	public void set_password(String _password) {
 		this._password = _password;
+	}
+
+	public boolean get_isDriver() {
+		return _isDriver;
+	}
+
+	public void set_isDriver(boolean _isDriver) {
+		this._isDriver = _isDriver;
 	}
 }
