@@ -25,5 +25,14 @@ public class UberController {
 		
 		return false;
 	}
+	
+	public boolean loginUser(String login, String password, Connector2 con) {
+		currentUser = sql.loginUser(login, password, con);
+		
+		if (currentUser != null) {
+			return true;
+		}
+		return false;
+	}
 
 }

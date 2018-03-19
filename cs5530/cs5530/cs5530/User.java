@@ -5,9 +5,10 @@ public class User {
 	private String _password;
 	private boolean _isDriver;
 	
-	public User(String username, String password) {
+	public User(String username, String password, boolean isDriver) {
 		this.set_username(username);
 		this.set_password(password);
+		this.set_isDriver(isDriver);
 	}
 
 	public String get_username() {

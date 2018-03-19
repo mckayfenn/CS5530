@@ -59,7 +59,12 @@ public class CommandLineView {
 	            		 while ((username = in.readLine()) == null && username.length() == 0);
 	            		 System.out.println("password: ");
 	            		 while ((password = in.readLine()) == null && password.length() == 0);
-	            		 
+	            		 if (controller.loginUser(username, password, con)) {
+	            			 System.out.println("succesfull login");
+	            		 }
+	            		 else {
+	            			 System.out.println("couldn not login");
+	            		 }
 	            		 
 	            		 
 	            	 }
