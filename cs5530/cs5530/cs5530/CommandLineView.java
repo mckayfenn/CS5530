@@ -219,7 +219,11 @@ public class CommandLineView {
 	            	 }
 	            	 else if (choiceAsInt == 3)
 	            	 {	 
-	            		 //driver is editing an exisiting car
+	            		 //driver is editing an existing car
+	            		 System.out.println("Vin # of Car you wish to edit: ");
+	            		 while ((vin = in.readLine()) == null && vin.length() == 0)
+	            			 System.out.println(vin);
+	            		 
 	            		 
 	            		 
 	            	 }
