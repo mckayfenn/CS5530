@@ -223,7 +223,15 @@ public class CommandLineView {
 	            		 System.out.println("Vin # of Car you wish to edit: ");
 	            		 while ((vin = in.readLine()) == null && vin.length() == 0)
 	            			 System.out.println(vin);
-	            		 
+//            			if(controller.editCar(Integer.parseInt(vin), category, model, make, Integer.parseInt(year), user.get_username(), con))
+//            			{
+//            				System.out.println("Successully edit car with vin: " + vin);
+//            				//break;
+//            			}
+//            			else
+//            			{
+//            				System.out.println("Error editing car");
+//            			}
 	            		 
 	            		 
 	            	 }
