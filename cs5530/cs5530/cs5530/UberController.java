@@ -7,6 +7,7 @@ public class UberController {
 	
 	User currentUser;
 	UberSQLQuieries sql = new UberSQLQuieries();
+	public UberController() {}
 	
 	public boolean setNewUser(String login, String password, String name, String address, String phone, String isDriver, Statement stmt) {
 		boolean _isDriver = false;

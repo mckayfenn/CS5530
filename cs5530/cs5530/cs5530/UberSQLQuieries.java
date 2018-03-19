@@ -10,10 +10,10 @@ public class UberSQLQuieries {
 	}
 	
 	public User createUser(String login, String password, String name, String address, String phone, boolean isDriver, Statement stmt) {
-		String sql = "insert into user (login, password, name, address, phone) values " + "(" + login + ", " + password + ", " + name + ", " + address + ", " + phone + ")";
+		String sql = "insert into user (login, password, name, address, phone) values " + "(" + login + ", " + password + ", " + name + ", " + address + ", " + phone + ");";
 		String sqldriver = "";
 		if (isDriver) {
-			sqldriver = "insert into driver (login) values " + "(" + login +  ")";
+			sqldriver = "insert into driver (login) values " + "(" + login +  ");";
 		}
 		
 		String outputs = "";
@@ -38,6 +38,7 @@ public class UberSQLQuieries {
 			}
 			 
 			rs.close();
+			rsd.close();
 	 	}
 	 	catch(Exception e)
 	 	{

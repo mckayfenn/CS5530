@@ -7,7 +7,6 @@ import java.io.*;
 
 public class CommandLineView {
 	
-	UberController controller = new UberController();
 	
 	/**
 	 * @param args
@@ -22,10 +21,12 @@ public class CommandLineView {
 	}
 	
 	public static void main(String[] args) {
+		UberController controller = new UberController();
 		Connector2 con = null;
 		String choice;
         String username;
         String password;
+        String name;
         String address;
         String phone;
         String isDriver;
@@ -72,6 +73,9 @@ public class CommandLineView {
 	            		 System.out.println("password: ");
 	            		 while ((password = in.readLine()) == null && password.length() == 0)
 	            			 System.out.println(password);
+	            		 System.out.println("name: ");
+	            		 while ((name = in.readLine()) == null && name.length() == 0)
+	            			 System.out.println(name);
 	            		 System.out.println("address: ");
 	            		 while ((address = in.readLine()) == null && address.length() == 0)
 	            			 System.out.println(address);
@@ -81,13 +85,16 @@ public class CommandLineView {
 	            		 System.out.println("Are you a driver? (yes/no): ");
 	            		 while ((isDriver = in.readLine()) == null && isDriver.length() == 0)
 	            			 System.out.println(isDriver);
-	            		 if(isDriver != "yes" || isDriver != "no")
+	            		 if(isDriver != null)
 	            		 {
-	            			 isDriver = null;
-	            			 System.out.println("Enter only yes or no: ");
-	            			 System.out.println("Are you a driver? (yes/no): ");
-		            		 while ((isDriver = in.readLine()) == null && isDriver.length() == 0)
-		            			 System.out.println(isDriver);
+	            			if(controller.setNewUser(username, password, name, address, phone, isDriver, con.stmt))
+	            			{
+	            				System.out.println("New user successfully registered");
+	            			}
+	            			else
+	            			{
+	            				System.out.println("Error creating new user");
+	            			}
 	            		 }
 	            		 
 	            	 }
