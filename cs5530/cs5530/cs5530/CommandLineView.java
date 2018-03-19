@@ -21,7 +21,7 @@ public class CommandLineView {
 	}
 	public static void displayUserMenu(String username, boolean isDriver)
 	{
-		 System.out.println("Welcome: " + username + " Please select from the following: ");
+		 System.out.println("Welcome: " + username + ". Please select from the following: ");
     	 System.out.println("User options: ");
     	 System.out.println("1. exit ");
 
@@ -164,6 +164,7 @@ public class CommandLineView {
          try
 		 {
 			//remember to replace the password
+        	 	con.closeConnection();
 			 	 con= new Connector2();
 	             System.out.println ("Connection established");
 	         
@@ -203,14 +204,14 @@ public class CommandLineView {
 	            			 System.out.println(year);
 	            		 if(user != null && year != null)
 	            		 {
-	            			if(controller.setNewUser(username, password, name, address, phone, isDriver, con))
+	            			if(controller.addNewCar(Integer.parseInt(vin), category, model, make, Integer.parseInt(year), user.get_username(), con))
 	            			{
-	            				System.out.println("New user successfully registered");
-	            				break;
+	            				System.out.println("New car added!");
+	            				//break;
 	            			}
 	            			else
 	            			{
-	            				System.out.println("Error creating new user");
+	            				System.out.println("Error adding new car");
 	            			}
 	            		 }
 	            		 

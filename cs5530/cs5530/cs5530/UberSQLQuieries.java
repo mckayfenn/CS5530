@@ -108,8 +108,8 @@ public class UberSQLQuieries {
 		 	System.out.println("executing " + sql);
 		 	rs = pstmt.executeQuery();
 	        while (rs.next()) {
-	        	receivedLogin += rs.getString("login");
-	        	receivedPass += rs.getString("password");
+	        	receivedLogin = rs.getString("login");
+	        	receivedPass = rs.getString("password");
 	        }
 	 	}
 	 	catch(Exception e)
