@@ -227,5 +227,34 @@ public class UberSQLQuieries {
 	 	}
 		return false;
 	}
+	
+	
+	public boolean editCar(int vin, String category, String model, String make, int year, Connector2 con) {
+		try {
+	 		String sql = "UPDATE car SET category = ?, model = ?, make = ?, year = ? WHERE vin = ?";
+	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, category);
+	        pstmt.setString(2, model);
+	        pstmt.setString(3, make);
+	        pstmt.setInt(4, year);
+	        pstmt.setInt(5, vin);
+		 	System.out.println("executing " + sql);
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	System.out.println("edited the car in sql");
+	    	 	return true;
+	        }
+	        else
+	        {
+	        	System.out.println("Could not edit car in sql");
+	        	return false;
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println(e.getMessage() + "\ncannot execute the query");
+	 	}
+		return false;
+	}
 
 }

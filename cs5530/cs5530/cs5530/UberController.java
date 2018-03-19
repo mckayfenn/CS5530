@@ -69,5 +69,11 @@ public class UberController {
 			return sql.addNewCar(vin, category, model, make, year, owner, con);
 		return false;
 	}
+	
+	public boolean editCar(int vin, String category, String model, String make, int year, String owner, Connector2 con) {
+		if (currentUser.get_isDriver() && currentUser.get_username().equals(owner))
+			return sql.editCar(vin, category, model, make, year, con);
+		return false;
+	}
 
 }

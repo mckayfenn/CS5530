@@ -155,12 +155,12 @@ public class CommandLineView {
 	{
 		String choice;
         int choiceAsInt = 0;
-        String vin;
-        String category;
-        String model;
-        String make;
-        String year;
-        String owner;
+        String vin = "";
+        String category = "";
+        String model = "";
+        String make = "";
+        String year = "";
+        String owner = "";
          try
 		 {
 			//remember to replace the password
@@ -223,15 +223,30 @@ public class CommandLineView {
 	            		 System.out.println("Vin # of Car you wish to edit: ");
 	            		 while ((vin = in.readLine()) == null && vin.length() == 0)
 	            			 System.out.println(vin);
-//            			if(controller.editCar(Integer.parseInt(vin), category, model, make, Integer.parseInt(year), user.get_username(), con))
-//            			{
-//            				System.out.println("Successully edit car with vin: " + vin);
-//            				//break;
-//            			}
-//            			else
-//            			{
-//            				System.out.println("Error editing car");
-//            			}
+	            		 System.out.println("New Category: ");
+	            		 while ((category = in.readLine()) == null && category.length() == 0)
+	            			 System.out.println(category);
+	            		 System.out.println("New Model: ");
+	            		 while ((model = in.readLine()) == null && model.length() == 0)
+	            			 System.out.println(model);
+	            		 System.out.println("New Make: ");
+	            		 while ((make = in.readLine()) == null && make.length() == 0)
+	            			 System.out.println(make);
+	            		 System.out.println("New Year: ");
+	            		 while ((year = in.readLine()) == null && year.length() == 0)
+	            			 System.out.println(year);
+	            		 if(user != null && year != null)
+	            		 {
+	            			if(controller.editCar(Integer.parseInt(vin), category, model, make, Integer.parseInt(year), user.get_username(), con))
+	            			{
+	            				System.out.println("Successully edit car with vin: " + vin);
+	            				//break;
+	            			}
+	            			else
+	            			{
+	            				System.out.println("Error editting car");
+	            			}
+	            		 }
 	            		 
 	            		 
 	            	 }
