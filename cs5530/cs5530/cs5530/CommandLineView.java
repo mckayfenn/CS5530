@@ -7,6 +7,8 @@ import java.io.*;
 
 public class CommandLineView {
 	
+	UberController controller = new UberController();
+	
 	/**
 	 * @param args
 	 */
@@ -24,7 +26,9 @@ public class CommandLineView {
 		String choice;
         String username;
         String password;
-        String sql = null;
+        String address;
+        String phone;
+        String isDriver;
         int choiceAsInt = 0;
          try
 		 {
@@ -49,30 +53,43 @@ public class CommandLineView {
 	            		 continue;
 	            	 if (choiceAsInt == 1)
 	            	 {
+	            		 //logining in as existing user
 	            		 System.out.println("username: ");
 	            		 while ((username = in.readLine()) == null && username.length() == 0);
-	            		 System.out.println("please enter a dname:");
-	            		 //while ((dname = in.readLine()) == null && dname.length() == 0);
-	            		 Course course=new Course();
-	            		 //System.out.println(course.getCourse(cname, dname, con.stmt));
+	            		 System.out.println("password: ");
+	            		 while ((password = in.readLine()) == null && password.length() == 0);
+	            		 
+	            		 
+	            		 
 	            	 }
 	            	 else if (choiceAsInt == 2)
 	            	 {	 
-	            		 System.out.println("please enter your query below:");
-	            		 while ((sql = in.readLine()) == null && sql.length() == 0)
-	            			 System.out.println(sql);
-	            		 ResultSet rs=con.stmt.executeQuery(sql);
-	            		 ResultSetMetaData rsmd = rs.getMetaData();
-	            		 int numCols = rsmd.getColumnCount();
-	            		 while (rs.next())
+	            		 //registering new user
+	            		 System.out.println("please enter your user info below: ");
+	            		 System.out.println("username: ");
+	            		 while ((username = in.readLine()) == null && username.length() == 0)
+	            			 System.out.println(username);
+	            		 System.out.println("password: ");
+	            		 while ((password = in.readLine()) == null && password.length() == 0)
+	            			 System.out.println(password);
+	            		 System.out.println("address: ");
+	            		 while ((address = in.readLine()) == null && address.length() == 0)
+	            			 System.out.println(address);
+	            		 System.out.println("phone #: ");
+	            		 while ((phone = in.readLine()) == null && phone.length() == 0)
+	            			 System.out.println(phone);
+	            		 System.out.println("Are you a driver? (yes/no): ");
+	            		 while ((isDriver = in.readLine()) == null && isDriver.length() == 0)
+	            			 System.out.println(isDriver);
+	            		 if(isDriver != "yes" || isDriver != "no")
 	            		 {
-	            			 //System.out.print("cname:");
-	            			 for (int i=1; i<=numCols;i++)
-	            				 System.out.print(rs.getString(i)+"  ");
-	            			 System.out.println("");
+	            			 isDriver = null;
+	            			 System.out.println("Enter only yes or no: ");
+	            			 System.out.println("Are you a driver? (yes/no): ");
+		            		 while ((isDriver = in.readLine()) == null && isDriver.length() == 0)
+		            			 System.out.println(isDriver);
 	            		 }
-	            		 System.out.println(" ");
-	            		 rs.close();
+	            		 
 	            	 }
 	            	 else
 	            	 {   
