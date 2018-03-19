@@ -99,7 +99,7 @@ public class UberSQLQuieries {
 		 			rs.close();
 		 		}
 		 		pstmt.close();
-		 		con.conn.close();
+		 		//con.conn.close();
 	 		}
 	 		catch(Exception e)
 	 		{
