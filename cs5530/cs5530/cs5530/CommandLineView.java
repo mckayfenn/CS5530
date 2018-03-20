@@ -24,11 +24,12 @@ public class CommandLineView {
 		 System.out.println("Welcome: " + username + ". Please select from the following: ");
     	 System.out.println("User options: ");
     	 System.out.println("1. exit ");
+    	 System.out.println("2. Declare a favorite car.");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("2. Add new car");
-	    	 System.out.println("3. Edit exisiting car");
+	    	 System.out.println("3. Add new car");
+	    	 System.out.println("4. Edit exisiting car");
 		 }
 
 	}
@@ -161,6 +162,7 @@ public class CommandLineView {
         String make = "";
         String year = "";
         String owner = "";
+        String fav = "";
          try
 		 {
 			//remember to replace the password
@@ -183,10 +185,22 @@ public class CommandLineView {
 	            	 }
 	            	 if (choiceAsInt < 1 | choiceAsInt > 3)
 	            		 continue;
-	            	 if (choiceAsInt == 2)
+	            	 if (choiceAsInt == 2) {
+	            		 // driver is declaring a car as their favorite
+	            		 System.out.println("Please enter the info below: ");
+	            		 System.out.println("Vin # of car you want to declare as favorite: ");
+	            		 while ((fav = in.readLine()) == null && fav.length() == 0)
+	            			 System.out.println(fav);
+	            		 
+	            		 if(controller.declareFavCar(Integer.parseInt(fav), user.get_username(), con))
+	            			 System.out.println("Successfully declared " + fav + " as favorite car.");
+	            		 else
+	            			 System.out.println("Failed to set as favorite.");
+	            	 }
+	            	 if (choiceAsInt == 3)
 	            	 {
 	            		 //driver is adding new car
-	            		 System.out.println("please enter your user info below: ");
+	            		 System.out.println("please enter the info of the new car: ");
 	            		 System.out.println("Vin #: ");
 	            		 while ((vin = in.readLine()) == null && vin.length() == 0)
 	            			 System.out.println(vin);
@@ -217,7 +231,7 @@ public class CommandLineView {
 	            		 
 	            		 
 	            	 }
-	            	 else if (choiceAsInt == 3)
+	            	 else if (choiceAsInt == 4)
 	            	 {	 
 	            		 //driver is editing an existing car
 	            		 System.out.println("Vin # of Car you wish to edit: ");

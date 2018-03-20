@@ -1,5 +1,9 @@
 package cs5530;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -253,6 +257,32 @@ public class UberSQLQuieries {
 	 	catch(Exception e)
 	 	{
 	 		System.out.println(e.getMessage() + "\ncannot execute the query");
+	 	}
+		return false;
+	}
+	
+	
+	public boolean declareFavCar(int vin, User u, Connector2 con) {
+		try {
+	 		String sql = "INSERT INTO favorites (login, vin, fvdate) " +  "VALUES (?, ?, ?)";
+	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, u.get_username());
+	        pstmt.setInt(2, vin);
+	        pstmt.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+		 	System.out.println("executing " + sql);
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	System.out.println("added car as fav");
+	    	 	return true;
+	        }
+	        else
+	        {
+	        	System.out.println("Could not add car as fav");
+	        	return false;
+	        }
+	 	}
+	 	catch(Exception e) {
+	 		System.out.println("cannot execute the query: " + e.getMessage());
 	 	}
 		return false;
 	}

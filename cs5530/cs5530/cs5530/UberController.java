@@ -70,9 +70,26 @@ public class UberController {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param vin
+	 * @param category
+	 * @param model
+	 * @param make
+	 * @param year
+	 * @param owner
+	 * @param con
+	 * @return
+	 */
 	public boolean editCar(int vin, String category, String model, String make, int year, String owner, Connector2 con) {
 		if (currentUser.get_isDriver() && currentUser.get_username().equals(owner))
 			return sql.editCar(vin, category, model, make, year, con);
+		return false;
+	}
+	
+	public boolean declareFavCar(int vin, String u, Connector2 con) {
+		if (currentUser.get_username().equals(u))
+			return sql.declareFavCar(vin, currentUser, con);
 		return false;
 	}
 
