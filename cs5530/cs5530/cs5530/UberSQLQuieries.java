@@ -262,7 +262,40 @@ public class UberSQLQuieries {
 	}
 	
 	
+	/**
+	 * 
+	 * @param vin
+	 * @param u
+	 * @param con
+	 * @return
+	 */
 	public boolean declareFavCar(int vin, User u, Connector2 con) {
+		try {
+	 		String sql = "INSERT INTO favorites (login, vin, fvdate) " +  "VALUES (?, ?, ?)";
+	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, u.get_username());
+	        pstmt.setInt(2, vin);
+	        pstmt.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+		 	System.out.println("executing " + sql);
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	System.out.println("added car as fav");
+	    	 	return true;
+	        }
+	        else
+	        {
+	        	System.out.println("Could not add car as fav");
+	        	return false;
+	        }
+	 	}
+	 	catch(Exception e) {
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		return false;
+	}
+	
+	
+	public boolean declareTrusted(User current, String otherUser, boolean isTrusted, Connector2 con) {
 		try {
 	 		String sql = "INSERT INTO favorites (login, vin, fvdate) " +  "VALUES (?, ?, ?)";
 	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);

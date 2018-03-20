@@ -87,10 +87,26 @@ public class UberController {
 		return false;
 	}
 	
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param u
+	 * @param con
+	 * @return
+	 */
 	public boolean declareFavCar(int vin, String u, Connector2 con) {
 		if (currentUser.get_username().equals(u))
 			return sql.declareFavCar(vin, currentUser, con);
 		return false;
+	}
+	
+	public boolean declareTrusted(String otherUser, String isTrusted, Connector2 con) {
+		boolean _isTrusted = false;
+		if (isTrusted.equals("yes") || isTrusted.equals("y"))
+			_isTrusted = true;
+		
+		return sql.declareTrusted(currentUser, otherUser, _isTrusted, con);
 	}
 
 }
