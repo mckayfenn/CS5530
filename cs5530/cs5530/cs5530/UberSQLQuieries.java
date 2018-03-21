@@ -333,43 +333,6 @@ public class UberSQLQuieries {
 	}
 	
 	
-	/**
-	 * 
-	 * @param currentUser
-	 * @param vin
-	 * @param pid
-	 * @param cost
-	 * @param date
-	 * @return
-	 */
-	/*
-	public boolean makeReservation(User currentUser, int vin, int pid, int cost, Date date) {
-		try {
-	 		String sql = "INSERT INTO reserve (login1, login2, isTrusted) " +  "VALUES (?, ?, ?)";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
-	        pstmt.setString(1, currentUser.get_username());
-	        pstmt.setString(2, otherUser);
-	        pstmt.setInt(3, (isTrusted) ? 1 : 0); // 1 is true, 0 is false
-		 	System.out.println("executing " + sql);
-	        if(pstmt.executeUpdate() > 0)
-	        {
-	    	 	System.out.println("SUCCESSFULL: added user as favorited or not");
-	    	 	return true;
-	        }
-	        else
-	        {
-	        	System.out.println("Could not user as favorited or not");
-	        	return false;
-	        }
-	 	}
-	 	catch(Exception e) {
-	 		System.out.println("cannot execute the query: " + e.getMessage());
-	 	}
-		
-		return false;
-	}
-	*/
-	
 	
 	/**
 	 * 
@@ -534,96 +497,42 @@ public class UberSQLQuieries {
 		return true;
 	}
 	
+	
 	/**
 	 * 
+	 * @param currentUser
 	 * @param vin
+	 * @param score
+	 * @param feedback
 	 * @param con
 	 * @return
 	 */
-	private String getOwnerOfVin(int vin, Connector2 con) {
-		ResultSet rs = null;
-		String output = null;
-		PreparedStatement pstmt = null;
+	public boolean giveFeedback(User currentUser, int vin, int score, String feedback, Connector2 con) {
 		try {
-	 		String sql = "SELECT owner FROM car WHERE vin = ?";
-	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
-	        pstmt.setInt(1, vin);
+	 		String sql = "INSERT INTO feedback (login, vin, score, text, fbdate) " +  "VALUES (?, ?, ?, ?, ?)";
+	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, currentUser.get_username());
+	        pstmt.setInt(2, vin);
+	        pstmt.setInt(3, score);
+	        pstmt.setString(4, feedback);
+	        pstmt.setDate(5, java.sql.Date.valueOf(LocalDate.now()));
 		 	System.out.println("executing " + sql);
-		 	rs = pstmt.executeQuery();
-	        while (rs.next()) {
-	        	output = rs.getString("owner");
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	System.out.println("SUCCESSFULL: gave user feedback");
+	    	 	return true;
+	        }
+	        else
+	        {
+	        	System.out.println("NOT SUCCESSFULL: Could not give user feedback");
+	        	return false;
 	        }
 	 	}
-	 	catch(Exception e)
-	 	{
+	 	catch(Exception e) {
 	 		System.out.println("cannot execute the query: " + e.getMessage());
 	 	}
-		finally
-	 	{
-	 		try{
-		 		if (rs!=null && !rs.isClosed()) {
-		 			rs.close();
-		 		}
-		 		if(pstmt != null)
-		 		{
-			 		pstmt.close();
-		 		}
-	 		}
-	 		catch(Exception e)
-	 		{
-	 			System.out.println("cannot close resultset");
-	 		}
-	 	}
 		
-		return output;
-	}
-	
-	
-	/**
-	 * 
-	 * @param login
-	 * @param con
-	 * @return
-	 */
-	private ArrayList getAvailableDriverTimes(String login, Connector2 con) {
-		ResultSet rs = null;
-		String output = null;
-		PreparedStatement pstmt = null;
-		ArrayList<String> result = new ArrayList<String>();
-		try {
-	 		String sql = "SELECT * FROM period WHERE pid IN (SELECT pid FROM available WHERE login = ?)";
-	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
-	        pstmt.setString(1, login);
-		 	System.out.println("executing " + sql);
-		 	rs = pstmt.executeQuery();
-	        while (rs.next()) {
-	        	output = rs.getString("pid") + " | " + rs.getString("fromHour") + " | " + rs.getString("toHour");
-	        	result.add(output);
-	        }
-	 	}
-	 	catch(Exception e)
-	 	{
-	 		System.out.println("cannot execute the query: " + e.getMessage());
-	 	}
-		finally
-	 	{
-	 		try{
-		 		if (rs!=null && !rs.isClosed()) {
-		 			rs.close();
-		 		}
-		 		if(pstmt != null)
-		 		{
-			 		pstmt.close();
-		 		}
-	 		}
-	 		catch(Exception e)
-	 		{
-	 			System.out.println("cannot close resultset");
-	 		}
-	 	}
-		
-		
-		return result;
+		return false;
 	}
 
 }
