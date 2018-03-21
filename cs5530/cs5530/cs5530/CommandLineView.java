@@ -3,6 +3,7 @@ package cs5530;
 
 import java.lang.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.io.*;
 
 public class CommandLineView {
@@ -31,8 +32,17 @@ public class CommandLineView {
 	    	 System.out.println("Driver options: ");
 	    	 System.out.println("4. Add new car");
 	    	 System.out.println("5. Edit exisiting car");
+	    	 System.out.println("6. Add availability times");
 		 }
 
+	}
+	public static void displayAvailabilityOptions(ArrayList list)
+	{
+		System.out.println("Select a time you are available: ");
+		for(int i = 0; i < list.size(); i++)
+		{
+			System.out.println(list.get(i));
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -186,7 +196,7 @@ public class CommandLineView {
 	            		 
 	            		 continue;
 	            	 }
-	            	 if (choiceAsInt < 1 | choiceAsInt > 3)
+	            	 if (choiceAsInt < 1 | choiceAsInt > 6)
 	            		 continue;
 	            	 if (choiceAsInt == 2) {
 	            		 // driver is declaring a car as their favorite
@@ -277,8 +287,77 @@ public class CommandLineView {
 	            				System.out.println("Error editting car");
 	            			}
 	            		 }
+
+	            	 }
+	            	 else if (choiceAsInt == 6)
+	            	 {	 
+	            		 //driver is choosing availability times
+	            		 selectAvailability(user,controller, con, controller.driverViewPeriods(con));
+	            	 }
+	            	 else
+	            	 {   
+	            		 System.out.println("EoM");
+	            		 con.stmt.close(); 
+	            		 break;
+	            	 }
+	             }
+		 }
+         catch (Exception e)
+         {
+        	 e.printStackTrace();
+        	 System.err.println ("Either connection error or query execution error!");
+         }
+         finally
+         {
+        	 if (con != null)
+        	 {
+        		 try
+        		 {
+        			 con.closeConnection();
+        			 System.out.println ("Database connection terminated");
+        		 }
+        	 
+        		 catch (Exception e) { /* ignore close errors */ }
+        	 }	 
+         }
+	}
+	private static void selectAvailability(User user, UberController controller, Connector2 con, ArrayList list)
+	{
+		String choice;
+        int choiceAsInt = 0;
+         try
+		 {
+			//remember to replace the password
+        	 	con.closeConnection();
+			 	 con= new Connector2();
+	             System.out.println ("Connection established");
+	         
+	             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	             
+	             while(true)
+	             {
+            		 displayAvailabilityOptions(list);
+	            	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	            	 try{
+	            		 choiceAsInt = Integer.parseInt(choice);
+	            	 }catch (Exception e)
+	            	 {
 	            		 
-	            		 
+	            		 continue;
+	            	 }
+	            	 if (choiceAsInt < 0 | choiceAsInt > list.size())
+	            		 continue;
+	            	 else if (choiceAsInt >= 0 | choiceAsInt < list.size())
+	            	 {
+	            		 for(int i = 0; i < list.size(); i++)
+	            		 {
+	            			 if(choiceAsInt == i)
+	            			 {
+	            				 controller.driverSetAvailability(list.get(i), con);
+	            				 System.out.println("Driver availiablity successfully added from cmdline");
+	            				 break;
+	            			 }
+	            		 }
 	            	 }
 	            	 else
 	            	 {   
