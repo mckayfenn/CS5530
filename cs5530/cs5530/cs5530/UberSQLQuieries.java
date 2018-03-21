@@ -30,10 +30,10 @@ public class UberSQLQuieries {
 	 */
 	public User createUser(String login, String password, String name, String address, String phone, boolean isDriver, Connector2 con) {
 		//String sql = "insert into user (login, password, name, address, phone) values " + "('" + login + "', '" + password + "', '" + name + "', '" + address + "', '" + phone + "');";
-			
+		PreparedStatement pstmt = null;
 	 	try {
 			String sql = "INSERT INTO user(login, password, name, address, phone) " +  "VALUES (?,?,?,?,?)";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, login);
 	        pstmt.setString(2, password);
 	        pstmt.setString(3, name);
@@ -57,6 +57,19 @@ public class UberSQLQuieries {
 	 	{
 	 		System.out.println(e.getMessage() + "cannot execute the query");
 	 	}
+	 	finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
 	 	return null;
 
 
@@ -69,10 +82,10 @@ public class UberSQLQuieries {
 	 * @param con
 	 */
 	private void createDriver(String login, User u, Connector2 con) {
-
+		PreparedStatement pstmt = null;
 	 	try {
 	 		String sql = "INSERT INTO driver (login) " +  "VALUES (?)";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, login);
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
@@ -88,6 +101,19 @@ public class UberSQLQuieries {
 	 	catch(Exception e)
 	 	{
 	 		System.out.println("cannot execute the query");
+	 	}
+	 	finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
 	 	}
 	}
 	
@@ -208,9 +234,10 @@ public class UberSQLQuieries {
 	 * @return
 	 */
 	public boolean addNewCar(int vin, String category, String model, String make, int year, String owner, Connector2 con) {
+		PreparedStatement pstmt = null;
 		try {
 	 		String sql = "INSERT INTO car (vin, category, model, make, year, owner) " +  "VALUES (?, ?, ?, ?, ?, ?)";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setInt(1, vin);
 	        pstmt.setString(2, category);
 	        pstmt.setString(3, model);
@@ -233,14 +260,28 @@ public class UberSQLQuieries {
 	 	{
 	 		System.out.println("cannot execute the query");
 	 	}
+		finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
 		return false;
 	}
 	
 	
 	public boolean editCar(int vin, String category, String model, String make, int year, Connector2 con) {
+		PreparedStatement pstmt = null;
 		try {
 	 		String sql = "UPDATE car SET category = ?, model = ?, make = ?, year = ? WHERE vin = ?";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, category);
 	        pstmt.setString(2, model);
 	        pstmt.setString(3, make);
@@ -262,6 +303,19 @@ public class UberSQLQuieries {
 	 	{
 	 		System.out.println(e.getMessage() + "\ncannot execute the query");
 	 	}
+		finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
 		return false;
 	}
 	
@@ -274,9 +328,10 @@ public class UberSQLQuieries {
 	 * @return
 	 */
 	public boolean declareFavCar(int vin, User u, Connector2 con) {
+		PreparedStatement pstmt = null;
 		try {
 	 		String sql = "INSERT INTO favorites (login, vin, fvdate) " +  "VALUES (?, ?, ?)";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, u.get_username());
 	        pstmt.setInt(2, vin);
 	        pstmt.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
@@ -295,6 +350,19 @@ public class UberSQLQuieries {
 	 	catch(Exception e) {
 	 		System.out.println("cannot execute the query: " + e.getMessage());
 	 	}
+		finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
 		return false;
 	}
 	
@@ -308,9 +376,10 @@ public class UberSQLQuieries {
 	 * @return
 	 */
 	public boolean declareTrusted(User currentUser, String otherUser, boolean isTrusted, Connector2 con) {
+		PreparedStatement pstmt = null;
 		try {
 	 		String sql = "INSERT INTO trust (login1, login2, isTrusted) " +  "VALUES (?, ?, ?)";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, currentUser.get_username());
 	        pstmt.setString(2, otherUser);
 	        pstmt.setInt(3, (isTrusted) ? 1 : 0); // 1 is true, 0 is false
@@ -328,6 +397,19 @@ public class UberSQLQuieries {
 	 	}
 	 	catch(Exception e) {
 	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
 	 	}
 		return false;
 	}
@@ -388,9 +470,10 @@ public class UberSQLQuieries {
 	 * @return
 	 */
 	public boolean driverSetAvailability(User currentUser, int pid, Connector2 con) {
+		PreparedStatement pstmt = null;
 		try {
 	 		String sql = "INSERT INTO available (login, pid) " +  "VALUES (?, ?)";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, currentUser.get_username());
 	        pstmt.setInt(2, pid);
 		 	System.out.println("executing " + sql);
@@ -407,6 +490,19 @@ public class UberSQLQuieries {
 	 	}
 	 	catch(Exception e) {
 	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
 	 	}
 		return false;
 	}
@@ -468,9 +564,10 @@ public class UberSQLQuieries {
 	public boolean setReservations(User currentUser, ArrayList<Reservation> reservations, Connector2 con) {
 		
 		for (Reservation reservation : reservations) {
+			PreparedStatement pstmt = null;
 			try {
 		 		String sql = "INSERT INTO reserve (login, vin, pid, cost, date) " +  "VALUES (?, ?, ?, ?, ?)";
-		        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 		        pstmt.setString(1, currentUser.get_username());
 		        pstmt.setInt(2, Integer.parseInt(reservation.get_vin()));
 		        pstmt.setInt(3, Integer.parseInt(reservation.get_pid()));
@@ -492,6 +589,19 @@ public class UberSQLQuieries {
 		 		System.out.println("cannot execute the query: " + e.getMessage());
 		 		return false;
 		 	}
+			finally
+		 	{
+		 		try{
+			 		if(pstmt != null)
+			 		{
+				 		pstmt.close();
+			 		}
+		 		}
+		 		catch(Exception e)
+		 		{
+		 			System.out.println("cannot close resultset");
+		 		}
+		 	}
 		}
 		
 		return true;
@@ -508,9 +618,10 @@ public class UberSQLQuieries {
 	 * @return
 	 */
 	public boolean giveFeedback(User currentUser, int vin, int score, String feedback, Connector2 con) {
+		PreparedStatement pstmt = null;
 		try {
 	 		String sql = "INSERT INTO feedback (login, vin, score, text, fbdate) " +  "VALUES (?, ?, ?, ?, ?)";
-	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, currentUser.get_username());
 	        pstmt.setInt(2, vin);
 	        pstmt.setInt(3, score);
@@ -530,6 +641,19 @@ public class UberSQLQuieries {
 	 	}
 	 	catch(Exception e) {
 	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
 	 	}
 		
 		return false;
