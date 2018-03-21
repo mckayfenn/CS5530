@@ -30,12 +30,26 @@ public class CommandLineView {
     	 //System.out.println("Time of reservation: " + times);
     	 System.out.println("Bidding Cost: " + cost);
 	}
+	public static void displayRideConfirmationInfo(Ride ride)
+	{
+		 System.out.println("Confirmation information before finalizing ride and completed reservation");
+    	 System.out.println("Car vin #: " + ride.get_vin());
+    	 System.out.println("Date of ride: " + ride.get_date());
+    	 System.out.println("Cost of ride: " + ride.get_pid());
+	}
 	public static void displayReservationStatusChoices()
 	{
 		 System.out.println("Make a selection on what you would like to do next: ");
     	 System.out.println("1. Confirm and finalize confirmation(s)");
     	 System.out.println("2. Make another reservation");
     	 System.out.println("3. Cancel reservation(s)");
+	}
+	public static void displayRideStatusChoices()
+	{
+		 System.out.println("Make a selection on what you would like to do next: ");
+    	 System.out.println("1. Confirm and finalize ride(s)");
+    	 System.out.println("2. Mark another reservation as ride");
+    	 System.out.println("3. Cancel ride(s)");
 	}
 	public static void displayUserMenu(String username, boolean isDriver)
 	{
@@ -46,12 +60,13 @@ public class CommandLineView {
     	 System.out.println("3. Denote user as trusted");
     	 System.out.println("4. Make Car Reservation");
     	 System.out.println("5. Give Car feedback");
+    	 System.out.println("6. Mark reservation as ride");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("6. Add new car");
-	    	 System.out.println("7. Edit exisiting car");
-	    	 System.out.println("8. Add availability times");
+	    	 System.out.println("7. Add new car");
+	    	 System.out.println("8. Edit exisiting car");
+	    	 System.out.println("9. Add availability times");
 		 }
 
 	}
@@ -62,6 +77,14 @@ public class CommandLineView {
 		for(int i = 0; i < list.size(); i++)
 		{
 			System.out.println(list.get(i));
+		}
+	}
+	public static void displayPastReservations(ArrayList<Reservation> list)
+	{
+		System.out.println("Here is a list of past reservations you made. \nPlease select a reservation that has been completed (A Ride): ");
+		for(int i = 0; i < list.size(); i++)
+		{
+			System.out.println(i + ". " + " Vin #: " + list.get(i).get_vin() + " Date: " + list.get(i).get_Date() + " Cost: " + list.get(i).get_cost());
 		}
 	}
 	
@@ -216,7 +239,7 @@ public class CommandLineView {
         		 
         		 continue;
         	 }
-        	 if (choiceAsInt < 1 | choiceAsInt > 8)
+        	 if (choiceAsInt < 1 | choiceAsInt > 9)
         		 continue;
         	 if (choiceAsInt == 2) {
         		 // driver is declaring a car as their favorite
@@ -266,10 +289,12 @@ public class CommandLineView {
         		 if(score < 0 || score > 10)
         		 {
         			 System.out.println("Score was invalid entry try again: ");
+        			 continue;
         		 }
         		 else if(feedbackText.length() > 199)
         		 {
         			 System.out.println("Feedback comment too large try again: ");
+        			 continue;
         		 }
         		 else
         		 {
@@ -283,7 +308,13 @@ public class CommandLineView {
         			 }
         		 }
         	 }
-        	 else if (choiceAsInt == 6)
+        	 else if(choiceAsInt == 6)
+        	 {
+        		 //user is marking reservation as ride
+        		 selectPastReservations();
+        		 
+        	 }
+        	 else if (choiceAsInt == 7)
         	 {
         		 //driver is adding new car
         		 System.out.println("please enter the info of the new car: ");
@@ -308,6 +339,7 @@ public class CommandLineView {
         			{
         				System.out.println("New car added!");
         				//break;
+        				
         			}
         			else
         			{
@@ -317,7 +349,7 @@ public class CommandLineView {
         		 
         		 
         	 }
-        	 else if (choiceAsInt == 7)
+        	 else if (choiceAsInt == 8)
         	 {	 
         		 //driver is editing an existing car
         		 System.out.println("Vin # of Car you wish to edit: ");
@@ -349,7 +381,7 @@ public class CommandLineView {
         		 }
 
         	 }
-        	 else if (choiceAsInt == 8)
+        	 else if (choiceAsInt == 9)
         	 {	 
         		 //driver is choosing availability times
         		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
@@ -393,7 +425,6 @@ public class CommandLineView {
 		String choice;
         int choiceAsInt = 0;
 			//remember to replace the password
-	     System.out.println ("Connection established");
 	 
 	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	     
@@ -459,7 +490,6 @@ public class CommandLineView {
 	{
 		String choice;
         int choiceAsInt = 0;
-	     System.out.println ("Connection established");
 	 
 	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	     
@@ -494,6 +524,94 @@ public class CommandLineView {
 	    	 {
 	    		 //cancel all reservations
 	    		 controller.getReservations().clear();
+	    		 break;
+	    	 }
+	    	 else
+	    	 {   
+	    		 System.out.println("EoM");
+	    		 return;
+	    	 }
+	     }
+
+	}
+	private static void selectPastReservations(UberController controller, ArrayList<Reservation> list, Connector2 con) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+	    	 displayPastReservations(list);
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 0 || choiceAsInt >= list.size())
+	    		 continue;
+	    	 else if (choiceAsInt < list.size())
+	    	 {
+	    		 for(int i = 0; i < list.size(); i++)
+	    		 {
+	    			 if(choiceAsInt == i)
+	    			 {
+	    				 Ride ride = new Ride(list.get(i).get_vin(), list.get(i).get_pid(), list.get(i).get_cost(), list.get(i).get_Date());
+	    				 list.remove(list.get(i));
+	    				 controller.getRides().add(ride);
+	    				 displayRideConfirmation(ride);
+	    				 rideStatusChoices(controller, con, list);
+	    				 break;
+	    				 
+	    			 }
+	    		 }
+	    		 break;
+	    	 }
+	     }
+	}
+	private static void rideStatusChoices(UberController controller, Connector2 con, ArrayList<Reservation> list) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+			 displayRideStatusChoices();
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if (choiceAsInt < 0 | choiceAsInt > 3)
+	    		 continue;
+	    	 else if (choiceAsInt == 1)
+	    	 {
+	    		 //confirm all rides
+//	    		 controller.setReservations(con);
+//	    		 controller.getReservations().clear();
+	    		 break;
+	    		 
+	    	 }
+	    	 else if (choiceAsInt == 2)
+	    	 {
+	    		 //make another ride
+//	    		 reserveCar(user, controller, con, in);
+	    		 selectPastReservations(controller, list, con);
+	    		 break;
+	    		 
+	    	 }
+	    	 else if (choiceAsInt == 3)
+	    	 {
+	    		 //cancel all rides
+	    		 //controller.getReservations().clear();
 	    		 break;
 	    	 }
 	    	 else
