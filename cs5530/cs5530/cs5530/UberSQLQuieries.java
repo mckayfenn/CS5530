@@ -829,6 +829,61 @@ public class UberSQLQuieries {
 		 	}
 		}
 		
+		if (result)
+			deleteReservations(currentUser, rides, con);
+		
+		
+		return result;
+	}
+	
+	
+	public boolean deleteReservations(User currentUser, ArrayList<Ride> rides, Connector2 con) {
+		boolean result = false;
+		
+		// this is going through the rides list, but is actually deleting from the reserve table based of off pid
+		for (Ride ride : rides) {
+			PreparedStatement pstmt = null;
+			try {
+		 		String sql = "DELETE FROM reserve WHERE login = ? AND vin = ? AND pid = ?";
+		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		        pstmt.setString(1, currentUser.get_username());
+		        pstmt.setInt(2, Integer.parseInt(ride.get_vin()));
+		        pstmt.setInt(3, Integer.parseInt(ride.get_pid()));
+			 	System.out.println("executing " + sql);
+			 	
+		        if(pstmt.executeUpdate() > 0)
+		        {
+		    	 	System.out.println("SUCCESSFULL: deleted a reservation after making rides");
+		    	 	result = true;
+		        }
+		        else
+		        {
+		        	System.out.println("NOT SUCCESSFULL: Could not delete reservation");
+		        	result = false;
+		        	break;
+		        }
+		 	}
+		 	catch(Exception e) {
+		 		System.out.println("cannot execute the query: " + e.getMessage());
+		 		result = false;
+		 		break;
+		 	}
+			finally
+		 	{
+		 		try{
+			 		if(pstmt != null)
+			 		{
+				 		pstmt.close();
+			 		}
+		 		}
+		 		catch(Exception e)
+		 		{
+		 			System.out.println("cannot close resultset");
+		 			result = false;
+		 			break;
+		 		}
+		 	}
+		}
 		
 		return result;
 	}
