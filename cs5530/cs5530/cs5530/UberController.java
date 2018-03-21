@@ -202,5 +202,16 @@ public class UberController {
 		reservations = sql.getPastReservations(currentUser, con);
 		return reservations;
 	}
+	
+	
+	/**
+	 * 
+	 * @param con
+	 * @return
+	 */
+	public boolean setRides(Connector2 con) {
+		sql.setRideHours(rides, con);
+		return sql.setRides(currentUser, rides, con);
+	}
 
 }

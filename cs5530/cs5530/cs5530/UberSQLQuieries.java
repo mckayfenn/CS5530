@@ -717,5 +717,120 @@ public class UberSQLQuieries {
 		
 		return reservations;
 	}
+	
+	/**
+	 * 
+	 * @param rides
+	 * @param con
+	 * @return
+	 */
+	public boolean setRideHours(ArrayList<Ride> rides, Connector2 con) {
+		boolean result = true;
+		
+		for (Ride ride : rides) {
+			ResultSet rs = null;
+			PreparedStatement pstmt = null;
+			try {
+		 		String sql = "SELECT fromHour, toHour FROM period WHERE pid = ?";
+		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		        pstmt.setInt(1, Integer.parseInt(ride.get_pid()));
+			 	System.out.println("executing " + sql);
+			 	rs = pstmt.executeQuery();
+		        while (rs.next()) {
+		        	ride.set_fromHour(rs.getTime("fromHour"));
+		        	ride.set_toHour(rs.getTime("toHour"));
+		        }
+		 	}
+		 	catch(Exception e)
+		 	{
+		 		System.out.println("cannot execute the query: " + e.getMessage());
+		 		result = false;
+		 		break;
+		 	}
+			finally
+		 	{
+		 		try{
+			 		if (rs!=null && !rs.isClosed()) {
+			 			rs.close();
+			 		}
+			 		if(pstmt != null)
+			 		{
+				 		pstmt.close();
+			 		}
+		 		}
+		 		catch(Exception e)
+		 		{
+		 			System.out.println("cannot close resultset");
+		 			result = false;
+		 			break;
+		 		}
+		 	}
+		}
+		
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param rides
+	 * @param con
+	 * @return
+	 */
+	public boolean setRides(User currentUser, ArrayList<Ride> rides, Connector2 con) {
+		boolean result = false;
+		
+		
+		for (Ride ride : rides) {
+			PreparedStatement pstmt = null;
+			try {
+		 		String sql = "INSERT INTO ride (login, vin, cost, date, fromHour, toHour) " +  "VALUES (?, ?, ?, ?, ?, ?)";
+		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		        pstmt.setString(1, currentUser.get_username());
+		        pstmt.setInt(2, Integer.parseInt(ride.get_vin()));
+		        pstmt.setInt(3, ride.get_cost());
+		        pstmt.setDate(4, ride.get_Date());
+		        pstmt.setTime(5, ride.get_fromHour());
+		        pstmt.setTime(6, ride.get_toHour());
+			 	System.out.println("executing " + sql);
+			 	
+		        if(pstmt.executeUpdate() > 0)
+		        {
+		    	 	System.out.println("SUCCESSFULL: Created one ride");
+		    	 	result = true;
+		        }
+		        else
+		        {
+		        	System.out.println("NOT SUCCESSFULL: Could not create ride");
+		        	result = false;
+		        	break;
+		        }
+		 	}
+		 	catch(Exception e) {
+		 		System.out.println("cannot execute the query: " + e.getMessage());
+		 		result = false;
+		 		break;
+		 	}
+			finally
+		 	{
+		 		try{
+			 		if(pstmt != null)
+			 		{
+				 		pstmt.close();
+			 		}
+		 		}
+		 		catch(Exception e)
+		 		{
+		 			System.out.println("cannot close resultset");
+		 			result = false;
+		 			break;
+		 		}
+		 	}
+		}
+		
+		
+		return result;
+	}
 
 }
