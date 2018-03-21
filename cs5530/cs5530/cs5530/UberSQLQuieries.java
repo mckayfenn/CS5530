@@ -837,7 +837,14 @@ public class UberSQLQuieries {
 	}
 	
 	
-	public boolean deleteReservations(User currentUser, ArrayList<Ride> rides, Connector2 con) {
+	/**
+	 * 
+	 * @param currentUser
+	 * @param rides
+	 * @param con
+	 * @return
+	 */
+	private boolean deleteReservations(User currentUser, ArrayList<Ride> rides, Connector2 con) {
 		boolean result = false;
 		
 		// this is going through the rides list, but is actually deleting from the reserve table based of off pid
@@ -884,6 +891,107 @@ public class UberSQLQuieries {
 		 		}
 		 	}
 		}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<Feedback> getFeedbackList(int vin, Connector2 con) {
+		ArrayList<Feedback> result = new ArrayList<Feedback>();
+		
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+	 		String sql = "SELECT * FROM feedback where vin = ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, vin);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	Feedback r = new Feedback(rs.getString("login"), rs.getInt("fid"), rs.getInt("score"), rs.getString("text"), vin, rs.getDate("fbdate"));
+	        	result.add(r);
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param fid
+	 * @param rating
+	 * @param con
+	 * @return
+	 */
+	public boolean setFeedbackRating(User currentUser, int fid, int rating, Connector2 con) {
+		boolean result = false;
+		
+		PreparedStatement pstmt = null;
+		try {
+	 		String sql = "INSERT INTO rates (login, fid, rating) " +  "VALUES (?, ?, ?)";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, currentUser.get_username());
+	        pstmt.setInt(2, fid);
+	        pstmt.setInt(3, rating);
+		 	System.out.println("executing " + sql);
+		 	
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	System.out.println("SUCCESSFULL: added a rating for a feedback");
+	    	 	result = true;
+	        }
+	        else
+	        {
+	        	System.out.println("NOT SUCCESSFULL: Could not add a rating");
+	        	result = false;
+	        }
+	 	}
+	 	catch(Exception e) {
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 		result = false;
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 			result = false;
+	 		}
+	 	}
 		
 		return result;
 	}

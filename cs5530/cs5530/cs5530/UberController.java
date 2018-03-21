@@ -218,5 +218,28 @@ public class UberController {
 		sql.setRideHours(rides, con);
 		return sql.setRides(currentUser, rides, con);
 	}
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<Feedback> getFeedbackList(String vin, Connector2 con) {
+		feedbackList = sql.getFeedbackList(Integer.parseInt(vin), con);
+		return feedbackList;
+	}
+	
+	
+	/**
+	 * 
+	 * @param fid
+	 * @param rating
+	 * @param con
+	 * @return
+	 */
+	public boolean setFeedbackRating(int fid, int rating, Connector2 con) {
+		return sql.setFeedbackRating(currentUser, fid, rating, con);
+	}
 
 }
