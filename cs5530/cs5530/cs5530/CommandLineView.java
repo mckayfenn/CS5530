@@ -61,13 +61,14 @@ public class CommandLineView {
     	 System.out.println("4. Make Car Reservation");
     	 System.out.println("5. Give Car feedback");
     	 System.out.println("6. Mark reservation as ride");
-    	 System.out.println("7. View/rate feedback on a car");
+    	 System.out.println("7. Rate feedback on a car");
+    	 System.out.println("8. View most useful feedbacks on driver");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("8. Add new car");
-	    	 System.out.println("9. Edit exisiting car");
-	    	 System.out.println("10. Add availability times");
+	    	 System.out.println("9. Add new car");
+	    	 System.out.println("10. Edit exisiting car");
+	    	 System.out.println("11. Add availability times");
 		 }
 
 	}
@@ -94,7 +95,21 @@ public class CommandLineView {
 		for(int i = 0; i < list.size(); i++)
 		{
 			System.out.println(i + ". " + " User: " + list.get(i).get_user() + " Date: " + list.get(i).get_date() + " Car Score: " + list.get(i).get_score() +
-					"\n" + "Feedback: " + list.get(i).get_text());
+					"\n" + "\t" + "Feedback: " + list.get(i).get_text());
+		}
+	}
+	public static void displayDrivers(ArrayList<User> list)
+	{
+		System.out.println("Pick a driver to view their feedback");
+		for(int i = 0; i < list.size(); i++)
+		{
+			System.out.println(i + ". " + " Driver name: " + list.get(i).get_name());
+			System.out.println("\t" + "Car(s): ");
+			ArrayList<Car> cars = list.get(i).get_cars();
+			for(int j = 0; j < cars.size(); j ++)
+			{
+				System.out.println("\t\t->" + " Vin #: " + cars.get(i).get_vin() + " Make: " + cars.get(i).get_make() + "Model: " + cars.get(i).get_Make());
+			}
 		}
 	}
 	
@@ -249,7 +264,7 @@ public class CommandLineView {
         		 
         		 continue;
         	 }
-        	 if (choiceAsInt < 1 | choiceAsInt > 10)
+        	 if (choiceAsInt < 1 | choiceAsInt > 11)
         		 continue;
         	 if (choiceAsInt == 2) {
         		 // driver is declaring a car as their favorite
@@ -330,9 +345,14 @@ public class CommandLineView {
         		 System.out.println("Vin # of car you wish to view feedback: ");
         		 while ((vin = in.readLine()) == null && vin.length() == 0)
         			 System.out.println(vin);
-        		 viewOrSelectFeedback(controller, controller.getFeedbackRatingList(), con, vin);
+        		 viewOrSelectFeedback(controller, controller.getFeedbackList(vin, con), con, vin);
         	 }
         	 else if (choiceAsInt == 8)
+        	 {
+        		 //user is viewing most useful feedback
+        		 
+        	 }
+        	 else if (choiceAsInt == 9)
         	 {
         		 //driver is adding new car
         		 System.out.println("please enter the info of the new car: ");
@@ -367,7 +387,7 @@ public class CommandLineView {
         		 
         		 
         	 }
-        	 else if (choiceAsInt == 9)
+        	 else if (choiceAsInt == 10)
         	 {	 
         		 //driver is editing an existing car
         		 System.out.println("Vin # of Car you wish to edit: ");
@@ -399,7 +419,7 @@ public class CommandLineView {
         		 }
 
         	 }
-        	 else if (choiceAsInt == 10)
+        	 else if (choiceAsInt == 11)
         	 {	 
         		 //driver is choosing availability times
         		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
@@ -693,19 +713,19 @@ public class CommandLineView {
 	    			 {
 	    				 String rating = "";
 	    				 Feedback fb = new Feedback(list.get(i).get_user(), list.get(i).get_fid(), list.get(i).get_score(), list.get(i).get_text(), list.get(i).get_vin(), list.get(i).get_date());
-	    				 list.remove(list.get(i));
 	    				 System.out.println("Your rating (0-2 only, 0 = useless, 1 = usefull, 2 = very usefull): ");
 	            		 while ((rating = in.readLine()) == null && rating.length() == 0)
 	            			 System.out.println(rating);
 	            		 int ratingAsInt = Integer.parseInt(rating);
-	            		 if(ratingAsInt != 0 || ratingAsInt != 1 || ratingAsInt != 2)
+	            		 if(ratingAsInt >= 0 || ratingAsInt <= 2)
 	            		 {
-	            			 System.out.println("Invalid rating, it must be 0 1 or 2");
-	            			 viewOrSelectFeedback(controller, list, con, vin);
+	            			 
+	            			 controller.setFeedbackRating(list.get(i).get_fid(), ratingAsInt, con);
 	            		 }
 	            		 else
 	            		 {
-		    				 controller.setFeedbackRating(list.get(i).get_fid(), ratingAsInt, con);
+	            			 System.out.println("Invalid rating, it must be 0 1 or 2");
+	            			 viewOrSelectFeedback(controller, list, con, vin);
 	            		 }
 	    				 break;
 	    				 
