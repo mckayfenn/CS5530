@@ -1,8 +1,8 @@
 package cs5530;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -295,11 +295,19 @@ public class UberSQLQuieries {
 	}
 	
 	
-	public boolean declareTrusted(User current, String otherUser, boolean isTrusted, Connector2 con) {
+	/**
+	 * 
+	 * @param currentUser
+	 * @param otherUser
+	 * @param isTrusted
+	 * @param con
+	 * @return
+	 */
+	public boolean declareTrusted(User currentUser, String otherUser, boolean isTrusted, Connector2 con) {
 		try {
 	 		String sql = "INSERT INTO trust (login1, login2, isTrusted) " +  "VALUES (?, ?, ?)";
 	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
-	        pstmt.setString(1, current.get_username());
+	        pstmt.setString(1, currentUser.get_username());
 	        pstmt.setString(2, otherUser);
 	        pstmt.setInt(3, (isTrusted) ? 1 : 0); // 1 is true, 0 is false
 		 	System.out.println("executing " + sql);
@@ -311,6 +319,112 @@ public class UberSQLQuieries {
 	        else
 	        {
 	        	System.out.println("Could not user as favorited or not");
+	        	return false;
+	        }
+	 	}
+	 	catch(Exception e) {
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		return false;
+	}
+	
+	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param vin
+	 * @param pid
+	 * @param cost
+	 * @param date
+	 * @return
+	 */
+	/*
+	public boolean makeReservation(User currentUser, int vin, int pid, int cost, Date date) {
+		try {
+	 		String sql = "INSERT INTO reserve (login1, login2, isTrusted) " +  "VALUES (?, ?, ?)";
+	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, currentUser.get_username());
+	        pstmt.setString(2, otherUser);
+	        pstmt.setInt(3, (isTrusted) ? 1 : 0); // 1 is true, 0 is false
+		 	System.out.println("executing " + sql);
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	System.out.println("added user as favorited or not");
+	    	 	return true;
+	        }
+	        else
+	        {
+	        	System.out.println("Could not user as favorited or not");
+	        	return false;
+	        }
+	 	}
+	 	catch(Exception e) {
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		
+		return false;
+	}
+	*/
+	
+	
+	/**
+	 * 
+	 * @param con
+	 * @return
+	 */
+	public ArrayList driverViewPeriods(Connector2 con) {
+		ResultSet rs = null;
+		String output = null;
+		PreparedStatement pstmt = null;
+		ArrayList result = null;
+		try {
+	 		String sql = "SELECT * FROM period";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output += rs.getString("pid") + " | " + rs.getString("fromHour") + " | " + rs.getString("toHour");
+	        	result.add(output);
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		pstmt.close();
+		 		con.conn.close();
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		
+		return result;
+	}
+	
+	public boolean driverSetAvailability(User currentUser, int pid, Connector2 con) {
+		try {
+	 		String sql = "INSERT INTO available (login, pid) " +  "VALUES (?, ?)";
+	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, currentUser.get_username());
+	        pstmt.setInt(2, pid);
+		 	System.out.println("executing " + sql);
+	        if(pstmt.executeUpdate() > 0)
+	        {
+	    	 	System.out.println("driver set availability hours");
+	    	 	return true;
+	        }
+	        else
+	        {
+	        	System.out.println("Could not set availability hours");
 	        	return false;
 	        }
 	 	}
