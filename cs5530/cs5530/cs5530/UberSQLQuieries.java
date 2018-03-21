@@ -81,8 +81,9 @@ public class UberSQLQuieries {
 	 * @param u
 	 * @param con
 	 */
-	private void createDriver(String login, User u, Connector2 con) {
+	private boolean createDriver(String login, User u, Connector2 con) {
 		PreparedStatement pstmt = null;
+		boolean result = false;
 	 	try {
 	 		String sql = "INSERT INTO driver (login) " +  "VALUES (?)";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -91,11 +92,12 @@ public class UberSQLQuieries {
 	        if(pstmt.executeUpdate() > 0)
 	        {
 	    	 	u.set_isDriver(true);
+	    	 	result = true;
 	        }
 	        else
 	        {
 	        	System.out.println("NOT SUCCESSFULL: Could not update driver boolean value");
-	        	return;
+	        	result = false;
 	        }
 	 	}
 	 	catch(Exception e)
@@ -115,6 +117,8 @@ public class UberSQLQuieries {
 	 			System.out.println("cannot close resultset");
 	 		}
 	 	}
+	 	
+	 	return result;
 	}
 	
 	/**
@@ -184,6 +188,7 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		String receivedLogin = null;
 		PreparedStatement pstmt = null;
+		boolean result = false;
 		try {
 	 		String sql = "SELECT login from driver where login = ?";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -216,10 +221,10 @@ public class UberSQLQuieries {
 	 	}
 		
 		if (receivedLogin != null) {
-			return true;
+			result = true;
 		}
 		
-		return false;
+		return result;
 	}
 	
 	/**
@@ -235,6 +240,7 @@ public class UberSQLQuieries {
 	 */
 	public boolean addNewCar(int vin, String category, String model, String make, int year, String owner, Connector2 con) {
 		PreparedStatement pstmt = null;
+		boolean result = false;
 		try {
 	 		String sql = "INSERT INTO car (vin, category, model, make, year, owner) " +  "VALUES (?, ?, ?, ?, ?, ?)";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -248,12 +254,12 @@ public class UberSQLQuieries {
 	        if(pstmt.executeUpdate() > 0)
 	        {
 	    	 	System.out.println("SUCCESSFULL: added a new car");
-	    	 	return true;
+	    	 	result = true;
 	        }
 	        else
 	        {
 	        	System.out.println("NOT SUCCESSFULL: Could not add new car");
-	        	return false;
+	        	result = false;
 	        }
 	 	}
 	 	catch(Exception e)
@@ -273,12 +279,13 @@ public class UberSQLQuieries {
 	 			System.out.println("cannot close resultset");
 	 		}
 	 	}
-		return false;
+		return result;
 	}
 	
 	
 	public boolean editCar(int vin, String category, String model, String make, int year, Connector2 con) {
 		PreparedStatement pstmt = null;
+		boolean result = false;
 		try {
 	 		String sql = "UPDATE car SET category = ?, model = ?, make = ?, year = ? WHERE vin = ?";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -291,12 +298,12 @@ public class UberSQLQuieries {
 	        if(pstmt.executeUpdate() > 0)
 	        {
 	    	 	System.out.println("SUCCESSFULL: edited the car in sql");
-	    	 	return true;
+	    	 	result = true;
 	        }
 	        else
 	        {
 	        	System.out.println("NOT SUCCESSFULL: Could not edit car in sql");
-	        	return false;
+	        	result = false;
 	        }
 	 	}
 	 	catch(Exception e)
@@ -316,7 +323,7 @@ public class UberSQLQuieries {
 	 			System.out.println("cannot close resultset");
 	 		}
 	 	}
-		return false;
+		return result;
 	}
 	
 	
@@ -329,6 +336,7 @@ public class UberSQLQuieries {
 	 */
 	public boolean declareFavCar(int vin, User u, Connector2 con) {
 		PreparedStatement pstmt = null;
+		boolean result = false;
 		try {
 	 		String sql = "INSERT INTO favorites (login, vin, fvdate) " +  "VALUES (?, ?, ?)";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -339,12 +347,12 @@ public class UberSQLQuieries {
 	        if(pstmt.executeUpdate() > 0)
 	        {
 	    	 	System.out.println("SUCCESSFULL: added car as fav");
-	    	 	return true;
+	    	 	result = true;
 	        }
 	        else
 	        {
 	        	System.out.println("NOT SUCCESSFULL: Could not add car as fav");
-	        	return false;
+	        	result = false;
 	        }
 	 	}
 	 	catch(Exception e) {
@@ -363,7 +371,7 @@ public class UberSQLQuieries {
 	 			System.out.println("cannot close resultset");
 	 		}
 	 	}
-		return false;
+		return result;
 	}
 	
 	
@@ -377,6 +385,7 @@ public class UberSQLQuieries {
 	 */
 	public boolean declareTrusted(User currentUser, String otherUser, boolean isTrusted, Connector2 con) {
 		PreparedStatement pstmt = null;
+		boolean result = false;
 		try {
 	 		String sql = "INSERT INTO trust (login1, login2, isTrusted) " +  "VALUES (?, ?, ?)";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -387,12 +396,12 @@ public class UberSQLQuieries {
 	        if(pstmt.executeUpdate() > 0)
 	        {
 	    	 	System.out.println("SUCCESSFULL: added user as favorited or not");
-	    	 	return true;
+	    	 	result = true;
 	        }
 	        else
 	        {
 	        	System.out.println("NOT SUCCESSFULL: Could not user as favorited or not");
-	        	return false;
+	        	result = false;
 	        }
 	 	}
 	 	catch(Exception e) {
@@ -411,7 +420,7 @@ public class UberSQLQuieries {
 	 			System.out.println("cannot close resultset");
 	 		}
 	 	}
-		return false;
+		return result;
 	}
 	
 	
@@ -471,6 +480,7 @@ public class UberSQLQuieries {
 	 */
 	public boolean driverSetAvailability(User currentUser, int pid, Connector2 con) {
 		PreparedStatement pstmt = null;
+		boolean result = false;
 		try {
 	 		String sql = "INSERT INTO available (login, pid) " +  "VALUES (?, ?)";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -480,12 +490,12 @@ public class UberSQLQuieries {
 	        if(pstmt.executeUpdate() > 0)
 	        {
 	    	 	System.out.println("SUCCESSFULL: driver set availability hours");
-	    	 	return true;
+	    	 	result = true;
 	        }
 	        else
 	        {
 	        	System.out.println("NOT SUCCESSFULL: Could not set availability hours");
-	        	return false;
+	        	result = false;
 	        }
 	 	}
 	 	catch(Exception e) {
@@ -504,7 +514,7 @@ public class UberSQLQuieries {
 	 			System.out.println("cannot close resultset");
 	 		}
 	 	}
-		return false;
+		return result;
 	}
 	
 	
@@ -562,7 +572,7 @@ public class UberSQLQuieries {
 	 * @return
 	 */
 	public boolean setReservations(User currentUser, ArrayList<Reservation> reservations, Connector2 con) {
-		
+		boolean result = false;
 		for (Reservation reservation : reservations) {
 			PreparedStatement pstmt = null;
 			try {
@@ -578,16 +588,18 @@ public class UberSQLQuieries {
 		        if(pstmt.executeUpdate() > 0)
 		        {
 		    	 	System.out.println("SUCCESSFULL: Created one reservation");
+		    	 	result = true;
 		        }
 		        else
 		        {
 		        	System.out.println("NOT SUCCESSFULL: Could not create reservation");
-		        	return false;
+		        	result = false;
+		        	break;
 		        }
 		 	}
 		 	catch(Exception e) {
 		 		System.out.println("cannot execute the query: " + e.getMessage());
-		 		return false;
+		 		result = false;
 		 	}
 			finally
 		 	{
@@ -604,7 +616,7 @@ public class UberSQLQuieries {
 		 	}
 		}
 		
-		return true;
+		return result;
 	}
 	
 	
@@ -619,6 +631,7 @@ public class UberSQLQuieries {
 	 */
 	public boolean giveFeedback(User currentUser, int vin, int score, String feedback, Connector2 con) {
 		PreparedStatement pstmt = null;
+		boolean result = false;
 		try {
 	 		String sql = "INSERT INTO feedback (login, vin, score, text, fbdate) " +  "VALUES (?, ?, ?, ?, ?)";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -631,12 +644,11 @@ public class UberSQLQuieries {
 	        if(pstmt.executeUpdate() > 0)
 	        {
 	    	 	System.out.println("SUCCESSFULL: gave user feedback");
-	    	 	return true;
+	    	 	result = true;
 	        }
 	        else
 	        {
 	        	System.out.println("NOT SUCCESSFULL: Could not give user feedback");
-	        	return false;
 	        }
 	 	}
 	 	catch(Exception e) {
@@ -656,7 +668,7 @@ public class UberSQLQuieries {
 	 		}
 	 	}
 		
-		return false;
+		return result;
 	}
 
 }
