@@ -11,6 +11,7 @@ public class UberController {
 	User currentUser;
 	private ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 	private ArrayList<Ride> rides = new ArrayList<Ride>();
+	private ArrayList<Feedback> feedbackList = new ArrayList<Feedback>();
 	
 	UberSQLQuieries sql = new UberSQLQuieries();
 	public UberController() {}
@@ -22,6 +23,10 @@ public class UberController {
 	
 	public ArrayList<Ride> getRides() {
 		return this.rides;
+	}
+	
+	public ArrayList<Feedback> getFeedbackRatingList() {
+		return this.feedbackList;
 	}
 	
 	/**
