@@ -173,5 +173,17 @@ public class UberController {
 		return sql.setReservations(currentUser, reservations, con);
 	}
 	
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param score
+	 * @param feedback
+	 * @param con
+	 * @return
+	 */
+	public boolean giveFeedback(String vin, String score, String feedback, Connector2 con) {
+		return sql.giveFeedback(currentUser, vin, score, feedback, con);
+	}
 
 }
