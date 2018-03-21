@@ -3,6 +3,8 @@ package cs5530;
 
 import java.lang.*;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.io.*;
 
@@ -20,6 +22,21 @@ public class CommandLineView {
     	 System.out.println("2. register new user");
     	 System.out.println("3. exit ");
 	}
+	public static void displayResConfirmationInfo(String vin, int cost, String date, String times)
+	{
+		 System.out.println("Confirmation information before finalizing reservation");
+    	 System.out.println("Car vin #: " + vin);
+    	 System.out.println("Date of reservation: " + date);
+    	 System.out.println("Time of reservation: " + times);
+    	 System.out.println("Bidding Cost: " + cost);
+	}
+	public static void displayReservationStatusChoices()
+	{
+		 System.out.println("Make a selection on what you would like to do next: ");
+    	 System.out.println("1. Confirm and finalize confirmation(s)");
+    	 System.out.println("2. Make another reservation");
+    	 System.out.println("3. Cancel reservation(s)");
+	}
 	public static void displayUserMenu(String username, boolean isDriver)
 	{
 		 System.out.println("Welcome: " + username + ". Please select from the following: ");
@@ -27,12 +44,13 @@ public class CommandLineView {
     	 System.out.println("1. exit ");
     	 System.out.println("2. Declare a favorite car.");
     	 System.out.println("3. Denote user as trusted");
+    	 System.out.println("4. Make Car Reservation");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("4. Add new car");
-	    	 System.out.println("5. Edit exisiting car");
-	    	 System.out.println("6. Add availability times");
+	    	 System.out.println("5. Add new car");
+	    	 System.out.println("6. Edit exisiting car");
+	    	 System.out.println("7. Add availability times");
 		 }
 
 	}
@@ -177,6 +195,8 @@ public class CommandLineView {
         String fav = "";
         String trustedUser = "";
         String isTrusted = "";
+        String cost = "";
+        String date = "";
          try
 		 {
 			//remember to replace the password
@@ -197,7 +217,7 @@ public class CommandLineView {
 	            		 
 	            		 continue;
 	            	 }
-	            	 if (choiceAsInt < 1 | choiceAsInt > 6)
+	            	 if (choiceAsInt < 1 | choiceAsInt > 7)
 	            		 continue;
 	            	 if (choiceAsInt == 2) {
 	            		 // driver is declaring a car as their favorite
@@ -224,7 +244,12 @@ public class CommandLineView {
 	            		 else
 	            			 System.out.println("Failed to set as trusted.");
 	            	 }
-	            	 else if (choiceAsInt == 4)
+	            	 else if(choiceAsInt == 4)
+	            	 {
+	            		 //user is reserving a car
+	            		 reserveCar(user,controller,con,in);
+	            	 }
+	            	 else if (choiceAsInt == 5)
 	            	 {
 	            		 //driver is adding new car
 	            		 System.out.println("please enter the info of the new car: ");
@@ -258,7 +283,7 @@ public class CommandLineView {
 	            		 
 	            		 
 	            	 }
-	            	 else if (choiceAsInt == 5)
+	            	 else if (choiceAsInt == 6)
 	            	 {	 
 	            		 //driver is editing an existing car
 	            		 System.out.println("Vin # of Car you wish to edit: ");
@@ -290,10 +315,10 @@ public class CommandLineView {
 	            		 }
 
 	            	 }
-	            	 else if (choiceAsInt == 6)
+	            	 else if (choiceAsInt == 7)
 	            	 {	 
 	            		 //driver is choosing availability times
-	            		 selectAvailability(user,controller, con, controller.driverViewPeriods(con));
+	            		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), user.get_isDriver(), null);
 	            	 }
 	            	 else
 	            	 {   
@@ -322,7 +347,28 @@ public class CommandLineView {
         	 }	 
          }
 	}
-	private static void selectAvailability(User user, UberController controller, Connector2 con, ArrayList<String> list)
+	private static void reserveCar(User user, UberController controller, Connector2 con, BufferedReader in)
+	{
+		String vin = "";
+        String cost = "";
+        String date = "";
+		System.out.println("Please enter reservation information: ");
+		 System.out.println("Vin # for car you wish to reserve: ");
+		 while ((vin = in.readLine()) == null && vin.length() == 0)
+			 System.out.println(vin);
+		 System.out.println("Date of reservation: ");
+		 while ((date = in.readLine()) == null && date.length() == 0)
+			 System.out.println(date);
+		 System.out.println("Cost: ");
+		 while ((cost = in.readLine()) == null && cost.length() == 0)
+			 System.out.println(cost);
+		 if(user != null && cost != null)
+		 {
+			 selectAvailability(user,controller, con, controller.getAvailableReservationTimes(vin, con), user.get_isDriver(), 
+					 new Reservation(vin, "-1", Integer.parseInt(cost), stringToDate(date)));
+		 }
+	}
+	private static void selectAvailability(User user, UberController controller, Connector2 con, ArrayList<String> list, boolean isDriver, Reservation reservation)
 	{
 		String choice;
         int choiceAsInt = 0;
@@ -354,16 +400,27 @@ public class CommandLineView {
 	            		 {
 	            			 if(choiceAsInt == i)
 	            			 {
-	            				 if(controller.driverSetAvailability(list.get(i).toString(), con)) {
-		            				 System.out.println("Driver availiablity successfully added from cmdline");
-		            				 break;
+	            				 if(isDriver)
+	            				 {
+		            				 if(controller.driverSetAvailability(list.get(i).toString(), con)) {
+			            				 System.out.println("Driver availiablity successfully added from cmdline");
+			            				 break;
+		            				 }
+		            				 else
+		            				 {
+		            					 System.out.println("Unable to set time due to error or you already have this availability selected \nTry Again!");
+		            					 break;
+		            				 }
 	            				 }
 	            				 else
 	            				 {
-	            					 System.out.println("Unable to set time due to error or you already have this availability selected \nTry Again!");
-	    
+	            					 reservation.set_pid(list.get(i).split(" ")[0]);
+	            					 controller.getReservations().add(reservation);
+	            					 displayResConfirmationInfo(reservation.get_vin(), reservation.get_cost(), reservation.get_Date().toString(), list.get(i));
+	            					 reservationStatusChoices(con, controller, user);
 	            					 break;
 	            				 }
+
 	            			 }
 	            		 }
 	            		 break;
@@ -394,5 +451,92 @@ public class CommandLineView {
         		 catch (Exception e) { /* ignore close errors */ }
         	 }	 
          }
+	}
+	private static void reservationStatusChoices(Connector2 con, UberController controller, User user)
+	{
+		String choice;
+        int choiceAsInt = 0;
+         try
+		 {
+			//remember to replace the password
+        	 	con.closeConnection();
+			 	 con= new Connector2();
+	             System.out.println ("Connection established");
+	         
+	             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	             
+	             while(true)
+	             {
+            		 displayReservationStatusChoices();
+	            	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	            	 try{
+	            		 choiceAsInt = Integer.parseInt(choice);
+	            	 }catch (Exception e)
+	            	 {
+	            		 
+	            		 continue;
+	            	 }
+	            	 if (choiceAsInt < 0 | choiceAsInt > 3)
+	            		 continue;
+	            	 else if (choiceAsInt == 1)
+	            	 {
+	            		 //confirm all resverations
+	            		 controller.setReservations(con);
+	            		 controller.getReservations().clear();
+	            		 break;
+	            		 
+	            	 }
+	            	 else if (choiceAsInt == 2)
+	            	 {
+	            		 //make another reservation
+	            		 reserveCar(user, controller, con, in);
+	            		 break;
+	            		 
+	            	 }
+	            	 else if (choiceAsInt == 3)
+	            	 {
+	            		 //cancel all reservations
+	            		 controller.getReservations().clear();
+	            		 break;
+	            	 }
+	            	 else
+	            	 {   
+	            		 System.out.println("EoM");
+	            		 con.stmt.close(); 
+	            		 break;
+	            	 }
+	             }
+		 }
+         catch (Exception e)
+         {
+        	 e.printStackTrace();
+        	 System.err.println ("Either connection error or query execution error!");
+         }
+         finally
+         {
+        	 if (con != null)
+        	 {
+        		 try
+        		 {
+        			 con.closeConnection();
+        			 System.out.println ("Database connection terminated");
+        		 }
+        	 
+        		 catch (Exception e) { /* ignore close errors */ }
+        	 }	 
+         }
+	}
+	private static java.sql.Date stringToDate(String str)
+	{
+		SimpleDateFormat sd = new SimpleDateFormat("dd-MM-yyyy");
+		java.util.Date date = null;
+		try {
+			date = sd.parse(str);
+		} catch (ParseException e) {
+			System.out.println("Invalid date format");
+			e.printStackTrace();
+		}
+		java.sql.Date sqlDate = new java.sql.Date(date.getTime());  
+		return sqlDate;
 	}
 }
