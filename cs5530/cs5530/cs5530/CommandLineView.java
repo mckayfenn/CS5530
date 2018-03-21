@@ -61,12 +61,13 @@ public class CommandLineView {
     	 System.out.println("4. Make Car Reservation");
     	 System.out.println("5. Give Car feedback");
     	 System.out.println("6. Mark reservation as ride");
+    	 System.out.println("7. View/rate feedback on a car");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("7. Add new car");
-	    	 System.out.println("8. Edit exisiting car");
-	    	 System.out.println("9. Add availability times");
+	    	 System.out.println("8. Add new car");
+	    	 System.out.println("9. Edit exisiting car");
+	    	 System.out.println("10. Add availability times");
 		 }
 
 	}
@@ -92,7 +93,8 @@ public class CommandLineView {
 		System.out.println("List of feedbacks for car (vin): " + vin + "\nYou can select a feedback to rate it's usefulness");
 		for(int i = 0; i < list.size(); i++)
 		{
-			System.out.println(i + ". " + " Vin #: " + list.get(i).get_vin() + " Date: " + list.get(i).get_Date() + " Cost: " + list.get(i).get_cost());
+			System.out.println(i + ". " + " User: " + list.get(i).get_user() + " Date: " + list.get(i).get_date() + " Car Score: " + list.get(i).get_score() +
+					"\n" + "Feedback: " + list.get(i).get_text());
 		}
 	}
 	
@@ -247,7 +249,7 @@ public class CommandLineView {
         		 
         		 continue;
         	 }
-        	 if (choiceAsInt < 1 | choiceAsInt > 9)
+        	 if (choiceAsInt < 1 | choiceAsInt > 10)
         		 continue;
         	 if (choiceAsInt == 2) {
         		 // driver is declaring a car as their favorite
@@ -324,6 +326,14 @@ public class CommandLineView {
         	 }
         	 else if (choiceAsInt == 7)
         	 {
+        		 //user is viewing feedback
+        		 System.out.println("Vin # of car you wish to view feedback: ");
+        		 while ((vin = in.readLine()) == null && vin.length() == 0)
+        			 System.out.println(vin);
+        		 viewOrSelectFeedback(controller, controller.getFeedbackRatingList(), con, vin);
+        	 }
+        	 else if (choiceAsInt == 8)
+        	 {
         		 //driver is adding new car
         		 System.out.println("please enter the info of the new car: ");
         		 System.out.println("Vin #: ");
@@ -357,7 +367,7 @@ public class CommandLineView {
         		 
         		 
         	 }
-        	 else if (choiceAsInt == 8)
+        	 else if (choiceAsInt == 9)
         	 {	 
         		 //driver is editing an existing car
         		 System.out.println("Vin # of Car you wish to edit: ");
@@ -389,7 +399,7 @@ public class CommandLineView {
         		 }
 
         	 }
-        	 else if (choiceAsInt == 9)
+        	 else if (choiceAsInt == 10)
         	 {	 
         		 //driver is choosing availability times
         		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
@@ -655,6 +665,42 @@ public class CommandLineView {
 	    	 }
 	     }
 
+	}
+	private static void viewOrSelectFeedback(UberController controller, ArrayList<Feedback> list, Connector2 con, String vin) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+			 displayFeedback(list, vin);;
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 0 || choiceAsInt >= list.size())
+	    		 continue;
+	    	 else if (choiceAsInt < list.size())
+	    	 {
+	    		 for(int i = 0; i < list.size(); i++)
+	    		 {
+	    			 if(choiceAsInt == i)
+	    			 {
+	    				 Feedback fb = new Feedback(list.get(i).get_user(), list.get(i).get_fid(), list.get(i).get_score(), list.get(i).get_text(), list.get(i).get_vin(), list.get(i).get_date());
+	    				 list.remove(list.get(i));
+	    				 //controller.
+	    				 break;
+	    				 
+	    			 }
+	    		 }
+	    		 break;
+	    	 }
+	     }
 	}
 	private static java.sql.Date stringToDate(String str)
 	{
