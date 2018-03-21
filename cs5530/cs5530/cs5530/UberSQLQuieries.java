@@ -126,8 +126,10 @@ public class UberSQLQuieries {
 		 		if (rs!=null && !rs.isClosed()) {
 		 			rs.close();
 		 		}
-		 		pstmt.close();
-		 		//con.conn.close();
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
 	 		}
 	 		catch(Exception e)
 	 		{
@@ -176,8 +178,10 @@ public class UberSQLQuieries {
 		 		if (rs!=null && !rs.isClosed()) {
 		 			rs.close();
 		 		}
-		 		pstmt.close();
-		 		con.conn.close();
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
 	 		}
 	 		catch(Exception e)
 	 		{
@@ -397,8 +401,10 @@ public class UberSQLQuieries {
 		 		if (rs!=null && !rs.isClosed()) {
 		 			rs.close();
 		 		}
-		 		pstmt.close();
-		 		con.conn.close();
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
 	 		}
 	 		catch(Exception e)
 	 		{
@@ -475,8 +481,10 @@ public class UberSQLQuieries {
 		 		if (rs!=null && !rs.isClosed()) {
 		 			rs.close();
 		 		}
-		 		pstmt.close();
-		 		con.conn.close();
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
 	 		}
 	 		catch(Exception e)
 	 		{
@@ -556,8 +564,10 @@ public class UberSQLQuieries {
 		 		if (rs!=null && !rs.isClosed()) {
 		 			rs.close();
 		 		}
-		 		pstmt.close();
-		 		con.conn.close();
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
 	 		}
 	 		catch(Exception e)
 	 		{
@@ -601,8 +611,10 @@ public class UberSQLQuieries {
 		 		if (rs!=null && !rs.isClosed()) {
 		 			rs.close();
 		 		}
-		 		pstmt.close();
-		 		con.conn.close();
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
 	 		}
 	 		catch(Exception e)
 	 		{

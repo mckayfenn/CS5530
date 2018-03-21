@@ -158,7 +158,7 @@ public class CommandLineView {
 	            	 else
 	            	 {   
 	            		 System.out.println("EoM");
-	            		 con.stmt.close(); 
+	            		 con.closeConnection();
 	            		 break;
 	            	 }
 	             }
@@ -182,7 +182,7 @@ public class CommandLineView {
         	 }	 
          }
 	}
-	public static void userMenu(UberController controller, Connector2 con, User user)
+	public static void userMenu(UberController controller, Connector2 con, User user) throws IOException
 	{
 		String choice;
         int choiceAsInt = 0;
@@ -197,157 +197,133 @@ public class CommandLineView {
         String isTrusted = "";
         String cost = "";
         String date = "";
-         try
-		 {
-			//remember to replace the password
-        	 	con.closeConnection();
-			 	 con= new Connector2();
-	             System.out.println ("Connection established");
-	         
-	             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-	             
-	             while(true)
-	             {
-	            	 displayUserMenu(user.get_username(), user.get_isDriver());
-	            	 while ((choice = in.readLine()) == null && choice.length() == 0);
-	            	 try{
-	            		 choiceAsInt = Integer.parseInt(choice);
-	            	 }catch (Exception e)
-	            	 {
-	            		 
-	            		 continue;
-	            	 }
-	            	 if (choiceAsInt < 1 | choiceAsInt > 7)
-	            		 continue;
-	            	 if (choiceAsInt == 2) {
-	            		 // driver is declaring a car as their favorite
-	            		 System.out.println("Please enter the info below: ");
-	            		 System.out.println("Vin # of car you want to declare as favorite: ");
-	            		 while ((fav = in.readLine()) == null && fav.length() == 0)
-	            			 System.out.println(fav);
-	            		 
-	            		 if(controller.declareFavCar(Integer.parseInt(fav), user.get_username(), con))
-	            			 System.out.println("Successfully declared " + fav + " as favorite car.");
-	            		 else
-	            			 System.out.println("Failed to set as favorite.");
-	            	 }
-	            	 else if (choiceAsInt == 3) {
-	            		 // user is dclaring if another user is trusted or not
-	            		 System.out.println("Enter the login/username of the person you wish to denote: ");
-	            		 while ((trustedUser = in.readLine()) == null && trustedUser.length() == 0)
-	            			 System.out.println(trustedUser);
-	            		 System.out.println("Do you trust them? (yes/no) ");
-	            		 while ((isTrusted = in.readLine()) == null && isTrusted.length() == 0)
-	            			 System.out.println(isTrusted);
-	            		 if(controller.declareTrusted(trustedUser, isTrusted, con))
-	            			 System.out.println("Successfully trusted " + trustedUser + " as a trustworthy fellow.");
-	            		 else
-	            			 System.out.println("Failed to set as trusted.");
-	            	 }
-	            	 else if(choiceAsInt == 4)
-	            	 {
-	            		 //user is reserving a car
-	            		 reserveCar(user,controller,con,in);
-	            	 }
-	            	 else if (choiceAsInt == 5)
-	            	 {
-	            		 //driver is adding new car
-	            		 System.out.println("please enter the info of the new car: ");
-	            		 System.out.println("Vin #: ");
-	            		 while ((vin = in.readLine()) == null && vin.length() == 0)
-	            			 System.out.println(vin);
-	            		 System.out.println("Category: ");
-	            		 while ((category = in.readLine()) == null && category.length() == 0)
-	            			 System.out.println(category);
-	            		 System.out.println("Model: ");
-	            		 while ((model = in.readLine()) == null && model.length() == 0)
-	            			 System.out.println(model);
-	            		 System.out.println("Make: ");
-	            		 while ((make = in.readLine()) == null && make.length() == 0)
-	            			 System.out.println(make);
-	            		 System.out.println("Year: ");
-	            		 while ((year = in.readLine()) == null && year.length() == 0)
-	            			 System.out.println(year);
-	            		 if(user != null && year != null)
-	            		 {
-	            			if(controller.addNewCar(Integer.parseInt(vin), category, model, make, Integer.parseInt(year), user.get_username(), con))
-	            			{
-	            				System.out.println("New car added!");
-	            				//break;
-	            			}
-	            			else
-	            			{
-	            				System.out.println("Error adding new car");
-	            			}
-	            		 }
-	            		 
-	            		 
-	            	 }
-	            	 else if (choiceAsInt == 6)
-	            	 {	 
-	            		 //driver is editing an existing car
-	            		 System.out.println("Vin # of Car you wish to edit: ");
-	            		 while ((vin = in.readLine()) == null && vin.length() == 0)
-	            			 System.out.println(vin);
-	            		 System.out.println("New Category: ");
-	            		 while ((category = in.readLine()) == null && category.length() == 0)
-	            			 System.out.println(category);
-	            		 System.out.println("New Model: ");
-	            		 while ((model = in.readLine()) == null && model.length() == 0)
-	            			 System.out.println(model);
-	            		 System.out.println("New Make: ");
-	            		 while ((make = in.readLine()) == null && make.length() == 0)
-	            			 System.out.println(make);
-	            		 System.out.println("New Year: ");
-	            		 while ((year = in.readLine()) == null && year.length() == 0)
-	            			 System.out.println(year);
-	            		 if(user != null && year != null)
-	            		 {
-	            			if(controller.editCar(Integer.parseInt(vin), category, model, make, Integer.parseInt(year), user.get_username(), con))
-	            			{
-	            				System.out.println("Successully edit car with vin: " + vin);
-	            				//break;
-	            			}
-	            			else
-	            			{
-	            				System.out.println("Error editting car");
-	            			}
-	            		 }
 
-	            	 }
-	            	 else if (choiceAsInt == 7)
-	            	 {	 
-	            		 //driver is choosing availability times
-	            		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), user.get_isDriver(), null);
-	            	 }
-	            	 else
-	            	 {   
-	            		 System.out.println("EoM");
-	            		 con.stmt.close(); 
-	            		 break;
-	            	 }
-	             }
-		 }
-         catch (Exception e)
+         System.out.println ("Connection established");
+     
+         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+         
+         while(true)
          {
-        	 e.printStackTrace();
-        	 System.err.println ("Either connection error or query execution error!");
-         }
-         finally
-         {
-        	 if (con != null)
+        	 displayUserMenu(user.get_username(), user.get_isDriver());
+        	 while ((choice = in.readLine()) == null && choice.length() == 0);
+        	 try{
+        		 choiceAsInt = Integer.parseInt(choice);
+        	 }catch (Exception e)
         	 {
-        		 try
+        		 
+        		 continue;
+        	 }
+        	 if (choiceAsInt < 1 | choiceAsInt > 7)
+        		 continue;
+        	 if (choiceAsInt == 2) {
+        		 // driver is declaring a car as their favorite
+        		 System.out.println("Please enter the info below: ");
+        		 System.out.println("Vin # of car you want to declare as favorite: ");
+        		 while ((fav = in.readLine()) == null && fav.length() == 0)
+        			 System.out.println(fav);
+        		 
+        		 if(controller.declareFavCar(Integer.parseInt(fav), user.get_username(), con))
+        			 System.out.println("Successfully declared " + fav + " as favorite car.");
+        		 else
+        			 System.out.println("Failed to set as favorite.");
+        	 }
+        	 else if (choiceAsInt == 3) {
+        		 // user is dclaring if another user is trusted or not
+        		 System.out.println("Enter the login/username of the person you wish to denote: ");
+        		 while ((trustedUser = in.readLine()) == null && trustedUser.length() == 0)
+        			 System.out.println(trustedUser);
+        		 System.out.println("Do you trust them? (yes/no) ");
+        		 while ((isTrusted = in.readLine()) == null && isTrusted.length() == 0)
+        			 System.out.println(isTrusted);
+        		 if(controller.declareTrusted(trustedUser, isTrusted, con))
+        			 System.out.println("Successfully trusted " + trustedUser + " as a trustworthy fellow.");
+        		 else
+        			 System.out.println("Failed to set as trusted.");
+        	 }
+        	 else if(choiceAsInt == 4)
+        	 {
+        		 //user is reserving a car
+        		 reserveCar(user,controller,con,in);
+        	 }
+        	 else if (choiceAsInt == 5)
+        	 {
+        		 //driver is adding new car
+        		 System.out.println("please enter the info of the new car: ");
+        		 System.out.println("Vin #: ");
+        		 while ((vin = in.readLine()) == null && vin.length() == 0)
+        			 System.out.println(vin);
+        		 System.out.println("Category: ");
+        		 while ((category = in.readLine()) == null && category.length() == 0)
+        			 System.out.println(category);
+        		 System.out.println("Model: ");
+        		 while ((model = in.readLine()) == null && model.length() == 0)
+        			 System.out.println(model);
+        		 System.out.println("Make: ");
+        		 while ((make = in.readLine()) == null && make.length() == 0)
+        			 System.out.println(make);
+        		 System.out.println("Year: ");
+        		 while ((year = in.readLine()) == null && year.length() == 0)
+        			 System.out.println(year);
+        		 if(user != null && year != null)
         		 {
-        			 con.closeConnection();
-        			 System.out.println ("Database connection terminated");
+        			if(controller.addNewCar(Integer.parseInt(vin), category, model, make, Integer.parseInt(year), user.get_username(), con))
+        			{
+        				System.out.println("New car added!");
+        				//break;
+        			}
+        			else
+        			{
+        				System.out.println("Error adding new car");
+        			}
         		 }
-        	 
-        		 catch (Exception e) { /* ignore close errors */ }
-        	 }	 
+        		 
+        		 
+        	 }
+        	 else if (choiceAsInt == 6)
+        	 {	 
+        		 //driver is editing an existing car
+        		 System.out.println("Vin # of Car you wish to edit: ");
+        		 while ((vin = in.readLine()) == null && vin.length() == 0)
+        			 System.out.println(vin);
+        		 System.out.println("New Category: ");
+        		 while ((category = in.readLine()) == null && category.length() == 0)
+        			 System.out.println(category);
+        		 System.out.println("New Model: ");
+        		 while ((model = in.readLine()) == null && model.length() == 0)
+        			 System.out.println(model);
+        		 System.out.println("New Make: ");
+        		 while ((make = in.readLine()) == null && make.length() == 0)
+        			 System.out.println(make);
+        		 System.out.println("New Year: ");
+        		 while ((year = in.readLine()) == null && year.length() == 0)
+        			 System.out.println(year);
+        		 if(user != null && year != null)
+        		 {
+        			if(controller.editCar(Integer.parseInt(vin), category, model, make, Integer.parseInt(year), user.get_username(), con))
+        			{
+        				System.out.println("Successully edit car with vin: " + vin);
+        				//break;
+        			}
+        			else
+        			{
+        				System.out.println("Error editting car");
+        			}
+        		 }
+
+        	 }
+        	 else if (choiceAsInt == 7)
+        	 {	 
+        		 //driver is choosing availability times
+        		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
+        	 }
+        	 else
+        	 {   
+        		 System.out.println("EoM");
+        		 return;
+        	 }
          }
 	}
-	private static void reserveCar(User user, UberController controller, Connector2 con, BufferedReader in)
+	private static void reserveCar(User user, UberController controller, Connector2 con, BufferedReader in) throws NumberFormatException, IOException
 	{
 		String vin = "";
         String cost = "";
@@ -370,172 +346,125 @@ public class CommandLineView {
 		 }
 		 if(user != null && cost != null)
 		 {
-			 selectAvailability(user,controller, con, controller.getAvailableReservationTimes(vin, con), user.get_isDriver(), 
+			 selectAvailability(user,controller, con, controller.getAvailableReservationTimes(vin, con), true, 
 					 new Reservation(vin, "-1", Integer.parseInt(cost), stringToDate(date)));
 		 }
 	}
-	private static void selectAvailability(User user, UberController controller, Connector2 con, ArrayList<String> list, boolean isDriver, Reservation reservation)
+	private static void selectAvailability(User user, UberController controller, Connector2 con, ArrayList<String> list, boolean isReserving, Reservation reservation) throws IOException
 	{
 		String choice;
         int choiceAsInt = 0;
-         try
-		 {
 			//remember to replace the password
-        	 	con.closeConnection();
-			 	 con= new Connector2();
-	             System.out.println ("Connection established");
-	         
-	             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-	             
-	             while(true)
-	             {
-            		 displayAvailabilityOptions(list);
-	            	 while ((choice = in.readLine()) == null && choice.length() == 0);
-	            	 try{
-	            		 choiceAsInt = Integer.parseInt(choice);
-	            	 }catch (Exception e)
-	            	 {
-	            		 
-	            		 continue;
-	            	 }
-	            	 ArrayList<Integer> listOfPID = new ArrayList<Integer>();
-	            	 for(int i = 0; i < list.size(); i++)
-	            	 {
-	            		 listOfPID.add(Integer.parseInt(list.get(i).split(" ")[0]));
-	            	 }
-	            	 if (!listOfPID.contains(choiceAsInt))
-	            		 continue;
-	            	 else if (listOfPID.contains(choiceAsInt))
-	            	 {
-	            		 for(int i = 0; i <= listOfPID.get(listOfPID.size() - 1); i++)
-	            		 {
-	            			 if(choiceAsInt == i)
-	            			 {
-	            				 if(isDriver)
-	            				 {
-		            				 if(controller.driverSetAvailability(list.get(i).toString(), con)) {
-			            				 System.out.println("Driver availiablity successfully added from cmdline");
-			            				 break;
-		            				 }
-		            				 else
-		            				 {
-		            					 System.out.println("Unable to set time due to error or you already have this availability selected \nTry Again!");
-		            					 break;
-		            				 }
-	            				 }
-	            				 else
-	            				 {
-	            					 reservation.set_pid(i + "");
-	            					 controller.getReservations().add(reservation);
-	            					 displayResConfirmationInfo(reservation.get_vin(), reservation.get_cost(), reservation.get_Date().toString());
-	            					 reservationStatusChoices(con, controller, user);
-	            					 break;
-	            				 }
-
-	            			 }
-	            		 }
-	            		 break;
-	            	 }
-	            	 else
-	            	 {   
-	            		 System.out.println("EoM");
-	            		 con.stmt.close(); 
-	            		 break;
-	            	 }
-	             }
-		 }
-         catch (Exception e)
-         {
-        	 e.printStackTrace();
-        	 System.err.println ("Either connection error or query execution error!");
-         }
-         finally
-         {
-        	 if (con != null)
-        	 {
-        		 try
-        		 {
-        			 con.closeConnection();
-        			 System.out.println ("Database connection terminated");
-        		 }
-        	 
-        		 catch (Exception e) { /* ignore close errors */ }
-        	 }	 
-         }
+	     System.out.println ("Connection established");
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+			 displayAvailabilityOptions(list);
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 
+	    		 continue;
+	    	 }
+	    	 ArrayList<Integer> listOfPID = new ArrayList<Integer>();
+	    	 for(int i = 0; i < list.size(); i++)
+	    	 {
+	    		 listOfPID.add(Integer.parseInt(list.get(i).split(" ")[0]));
+	    	 }
+	    	 if (!listOfPID.contains(choiceAsInt))
+	    		 continue;
+	    	 else if (listOfPID.contains(choiceAsInt))
+	    	 {
+	    		 for(int i = 0; i <= listOfPID.get(listOfPID.size() - 1); i++)
+	    		 {
+	    			 if(choiceAsInt == i)
+	    			 {
+	    				 if(!isReserving)
+	    				 {
+	    					 //here mean a driver is selecting their available times
+	        				 if(controller.driverSetAvailability(list.get(i).toString(), con)) {
+	            				 System.out.println("Driver availiablity successfully added from cmdline");
+	            				 break;
+	        				 }
+	        				 else
+	        				 {
+	        					 System.out.println("Unable to set time due to error or you already have this availability selected \nTry Again!");
+	        					 break;
+	        				 }
+	    				 }
+	    				 else
+	    				 {
+	    					 //here means a user/driver is reserving a ride
+	    					 reservation.set_pid(i + "");
+	    					 controller.getReservations().add(reservation);
+	    					 displayResConfirmationInfo(reservation.get_vin(), reservation.get_cost(), reservation.get_Date().toString());
+	    					 reservationStatusChoices(con, controller, user);
+	    					 break;
+	    				 }
+	
+	    			 }
+	    		 }
+	    		 break;
+	    	 }
+	    	 else
+	    	 {   
+	    		 System.out.println("EoM");
+	    		 return;
+	    	 }
+	     }
 	}
-	private static void reservationStatusChoices(Connector2 con, UberController controller, User user)
+	private static void reservationStatusChoices(Connector2 con, UberController controller, User user) throws IOException
 	{
 		String choice;
         int choiceAsInt = 0;
-         try
-		 {
-			//remember to replace the password
-        	 	con.closeConnection();
-			 	 con= new Connector2();
-	             System.out.println ("Connection established");
-	         
-	             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-	             
-	             while(true)
-	             {
-            		 displayReservationStatusChoices();
-	            	 while ((choice = in.readLine()) == null && choice.length() == 0);
-	            	 try{
-	            		 choiceAsInt = Integer.parseInt(choice);
-	            	 }catch (Exception e)
-	            	 {
-	            		 
-	            		 continue;
-	            	 }
-	            	 if (choiceAsInt < 0 | choiceAsInt > 3)
-	            		 continue;
-	            	 else if (choiceAsInt == 1)
-	            	 {
-	            		 //confirm all resverations
-	            		 controller.setReservations(con);
-	            		 controller.getReservations().clear();
-	            		 break;
-	            		 
-	            	 }
-	            	 else if (choiceAsInt == 2)
-	            	 {
-	            		 //make another reservation
-	            		 reserveCar(user, controller, con, in);
-	            		 break;
-	            		 
-	            	 }
-	            	 else if (choiceAsInt == 3)
-	            	 {
-	            		 //cancel all reservations
-	            		 controller.getReservations().clear();
-	            		 break;
-	            	 }
-	            	 else
-	            	 {   
-	            		 System.out.println("EoM");
-	            		 con.stmt.close(); 
-	            		 break;
-	            	 }
-	             }
-		 }
-         catch (Exception e)
-         {
-        	 e.printStackTrace();
-        	 System.err.println ("Either connection error or query execution error!");
-         }
-         finally
-         {
-        	 if (con != null)
-        	 {
-        		 try
-        		 {
-        			 con.closeConnection();
-        			 System.out.println ("Database connection terminated");
-        		 }
-        	 
-        		 catch (Exception e) { /* ignore close errors */ }
-        	 }	 
-         }
+	     System.out.println ("Connection established");
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+			 displayReservationStatusChoices();
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if (choiceAsInt < 0 | choiceAsInt > 3)
+	    		 continue;
+	    	 else if (choiceAsInt == 1)
+	    	 {
+	    		 //confirm all resverations
+	    		 controller.setReservations(con);
+	    		 controller.getReservations().clear();
+	    		 break;
+	    		 
+	    	 }
+	    	 else if (choiceAsInt == 2)
+	    	 {
+	    		 //make another reservation
+	    		 reserveCar(user, controller, con, in);
+	    		 break;
+	    		 
+	    	 }
+	    	 else if (choiceAsInt == 3)
+	    	 {
+	    		 //cancel all reservations
+	    		 controller.getReservations().clear();
+	    		 break;
+	    	 }
+	    	 else
+	    	 {   
+	    		 System.out.println("EoM");
+	    		 return;
+	    	 }
+	     }
+
 	}
 	private static java.sql.Date stringToDate(String str)
 	{
