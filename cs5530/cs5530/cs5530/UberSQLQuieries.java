@@ -297,20 +297,20 @@ public class UberSQLQuieries {
 	
 	public boolean declareTrusted(User current, String otherUser, boolean isTrusted, Connector2 con) {
 		try {
-	 		String sql = "INSERT INTO favorites (login, vin, fvdate) " +  "VALUES (?, ?, ?)";
+	 		String sql = "INSERT INTO trust (login1, login2, isTrusted) " +  "VALUES (?, ?, ?)";
 	        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
-	        pstmt.setString(1, u.get_username());
-	        pstmt.setInt(2, vin);
-	        pstmt.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+	        pstmt.setString(1, current.get_username());
+	        pstmt.setString(2, otherUser);
+	        pstmt.setInt(3, (isTrusted) ? 1 : 0); // 1 is true, 0 is false
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
-	    	 	System.out.println("added car as fav");
+	    	 	System.out.println("added user as favorited or not");
 	    	 	return true;
 	        }
 	        else
 	        {
-	        	System.out.println("Could not add car as fav");
+	        	System.out.println("Could not user as favorited or not");
 	        	return false;
 	        }
 	 	}
