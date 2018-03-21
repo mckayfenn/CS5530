@@ -1,6 +1,7 @@
 package cs5530;
 
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import com.mysql.jdbc.Connection;
 
@@ -101,6 +102,14 @@ public class UberController {
 		return false;
 	}
 	
+	
+	/**
+	 * 
+	 * @param otherUser
+	 * @param isTrusted
+	 * @param con
+	 * @return
+	 */
 	public boolean declareTrusted(String otherUser, String isTrusted, Connector2 con) {
 		boolean _isTrusted = false;
 		if (isTrusted.equals("yes") || isTrusted.equals("y"))
@@ -108,5 +117,27 @@ public class UberController {
 		
 		return sql.declareTrusted(currentUser, otherUser, _isTrusted, con);
 	}
+	
+	
+	/**
+	 * 
+	 * @param con
+	 * @return
+	 */
+	public ArrayList driverViewPeriods(Connector2 con) {
+		if (!currentUser.get_isDriver())
+			return null; // don't do anything if user isn't a driver
+		return sql.driverViewPeriods(con);
+	}
+	
+	public boolean driverSetAvailability(String s, Connector2 con) {
+		if (!currentUser.get_isDriver())
+			return false;
+		String[] parse = s.split(" ");
+		int i = Integer.parseInt(parse[0]);
+		System.out.println(i);
+		return sql.driverSetAvailability(currentUser, i, con);
+	}
+	
 
 }
