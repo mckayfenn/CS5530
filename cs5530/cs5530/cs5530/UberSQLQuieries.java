@@ -376,14 +376,14 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		String output = null;
 		PreparedStatement pstmt = null;
-		ArrayList result = null;
+		ArrayList<String> result = new ArrayList<String>();
 		try {
 	 		String sql = "SELECT * FROM period";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 		 	System.out.println("executing " + sql);
 		 	rs = pstmt.executeQuery();
 	        while (rs.next()) {
-	        	output += rs.getString("pid") + " | " + rs.getString("fromHour") + " | " + rs.getString("toHour");
+	        	output = rs.getString("pid") + " | " + rs.getString("fromHour") + " | " + rs.getString("toHour");
 	        	result.add(output);
 	        }
 	 	}

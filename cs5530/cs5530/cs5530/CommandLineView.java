@@ -36,9 +36,10 @@ public class CommandLineView {
 		 }
 
 	}
-	public static void displayAvailabilityOptions(ArrayList list)
+	public static void displayAvailabilityOptions(ArrayList<String> list)
 	{
-		System.out.println("Select a time you are available: ");
+		System.out.println("Select ID of time you are available: ");
+		System.out.println("ID | From Hour | To Hour");
 		for(int i = 0; i < list.size(); i++)
 		{
 			System.out.println(list.get(i));
@@ -321,7 +322,7 @@ public class CommandLineView {
         	 }	 
          }
 	}
-	private static void selectAvailability(User user, UberController controller, Connector2 con, ArrayList list)
+	private static void selectAvailability(User user, UberController controller, Connector2 con, ArrayList<String> list)
 	{
 		String choice;
         int choiceAsInt = 0;
@@ -353,11 +354,19 @@ public class CommandLineView {
 	            		 {
 	            			 if(choiceAsInt == i)
 	            			 {
-	            				 controller.driverSetAvailability(list.get(i), con);
-	            				 System.out.println("Driver availiablity successfully added from cmdline");
-	            				 break;
+	            				 if(controller.driverSetAvailability(list.get(i).toString(), con)) {
+		            				 System.out.println("Driver availiablity successfully added from cmdline");
+		            				 break;
+	            				 }
+	            				 else
+	            				 {
+	            					 System.out.println("Unable to set time due to error or you already have this availability selected \nTry Again!");
+	    
+	            					 break;
+	            				 }
 	            			 }
 	            		 }
+	            		 break;
 	            	 }
 	            	 else
 	            	 {   
