@@ -45,12 +45,13 @@ public class CommandLineView {
     	 System.out.println("2. Declare a favorite car.");
     	 System.out.println("3. Denote user as trusted");
     	 System.out.println("4. Make Car Reservation");
+    	 System.out.println("5. Give Car feedback");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("5. Add new car");
-	    	 System.out.println("6. Edit exisiting car");
-	    	 System.out.println("7. Add availability times");
+	    	 System.out.println("6. Add new car");
+	    	 System.out.println("7. Edit exisiting car");
+	    	 System.out.println("8. Add availability times");
 		 }
 
 	}
@@ -197,6 +198,8 @@ public class CommandLineView {
         String isTrusted = "";
         String cost = "";
         String date = "";
+        String feedbackText = "";
+        String feedbackScore = "";
 
          System.out.println ("Connection established");
      
@@ -213,7 +216,7 @@ public class CommandLineView {
         		 
         		 continue;
         	 }
-        	 if (choiceAsInt < 1 | choiceAsInt > 7)
+        	 if (choiceAsInt < 1 | choiceAsInt > 8)
         		 continue;
         	 if (choiceAsInt == 2) {
         		 // driver is declaring a car as their favorite
@@ -245,7 +248,38 @@ public class CommandLineView {
         		 //user is reserving a car
         		 reserveCar(user,controller,con,in);
         	 }
-        	 else if (choiceAsInt == 5)
+        	 else if(choiceAsInt == 5)
+        	 {
+        		 //user is giving car feedback
+        		 System.out.println("Enter in following feedback info: ");
+        		 System.out.println("Vin # of car you wish to give feedback: ");
+        		 while ((vin = in.readLine()) == null && vin.length() == 0)
+        			 System.out.println(vin);
+        		 System.out.println("Feedback Score (0-10, 0 = Awful, 10 = Amazing!: ");
+        		 while ((feedbackScore = in.readLine()) == null && feedbackScore.length() == 0)
+        			 System.out.println(feedbackScore);
+        		 System.out.println("Feedback comment [Optional] Limit to 200 characters: ");
+        		 while ((feedbackText = in.readLine()) == null && feedbackText.length() == 0)
+        			 System.out.println(feedbackText);
+        		 
+        		 int score = Integer.parseInt(feedbackScore);
+        		 if(score < 0 || score > 10)
+        		 {
+        			 System.out.println("Score was invalid entry try again: ");
+        			 break;
+        		 }
+        		 else if(feedbackText.length() > 199)
+        		 {
+        			 System.out.println("Feedback comment too large try again: ");
+        			 break;
+        		 }
+        		 else
+        		 {
+        			 controller.giveFeedback(vin, score, feedbackText, con);
+        			 break;
+        		 }
+        	 }
+        	 else if (choiceAsInt == 6)
         	 {
         		 //driver is adding new car
         		 System.out.println("please enter the info of the new car: ");
@@ -279,7 +313,7 @@ public class CommandLineView {
         		 
         		 
         	 }
-        	 else if (choiceAsInt == 6)
+        	 else if (choiceAsInt == 7)
         	 {	 
         		 //driver is editing an existing car
         		 System.out.println("Vin # of Car you wish to edit: ");
@@ -311,7 +345,7 @@ public class CommandLineView {
         		 }
 
         	 }
-        	 else if (choiceAsInt == 7)
+        	 else if (choiceAsInt == 8)
         	 {	 
         		 //driver is choosing availability times
         		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
