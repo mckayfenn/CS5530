@@ -81,7 +81,7 @@ public class UberSQLQuieries {
 	        }
 	        else
 	        {
-	        	System.out.println("Could not update driver boolean value");
+	        	System.out.println("NOT SUCCESSFULL: Could not update driver boolean value");
 	        	return;
 	        }
 	 	}
@@ -216,12 +216,12 @@ public class UberSQLQuieries {
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
-	    	 	System.out.println("added a new car");
+	    	 	System.out.println("SUCCESSFULL: added a new car");
 	    	 	return true;
 	        }
 	        else
 	        {
-	        	System.out.println("Could not add new car");
+	        	System.out.println("NOT SUCCESSFULL: Could not add new car");
 	        	return false;
 	        }
 	 	}
@@ -245,12 +245,12 @@ public class UberSQLQuieries {
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
-	    	 	System.out.println("edited the car in sql");
+	    	 	System.out.println("SUCCESSFULL: edited the car in sql");
 	    	 	return true;
 	        }
 	        else
 	        {
-	        	System.out.println("Could not edit car in sql");
+	        	System.out.println("NOT SUCCESSFULL: Could not edit car in sql");
 	        	return false;
 	        }
 	 	}
@@ -279,12 +279,12 @@ public class UberSQLQuieries {
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
-	    	 	System.out.println("added car as fav");
+	    	 	System.out.println("SUCCESSFULL: added car as fav");
 	    	 	return true;
 	        }
 	        else
 	        {
-	        	System.out.println("Could not add car as fav");
+	        	System.out.println("NOT SUCCESSFULL: Could not add car as fav");
 	        	return false;
 	        }
 	 	}
@@ -313,12 +313,12 @@ public class UberSQLQuieries {
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
-	    	 	System.out.println("added user as favorited or not");
+	    	 	System.out.println("SUCCESSFULL: added user as favorited or not");
 	    	 	return true;
 	        }
 	        else
 	        {
-	        	System.out.println("Could not user as favorited or not");
+	        	System.out.println("NOT SUCCESSFULL: Could not user as favorited or not");
 	        	return false;
 	        }
 	 	}
@@ -349,7 +349,7 @@ public class UberSQLQuieries {
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
-	    	 	System.out.println("added user as favorited or not");
+	    	 	System.out.println("SUCCESSFULL: added user as favorited or not");
 	    	 	return true;
 	        }
 	        else
@@ -410,6 +410,14 @@ public class UberSQLQuieries {
 		return result;
 	}
 	
+	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param pid
+	 * @param con
+	 * @return
+	 */
 	public boolean driverSetAvailability(User currentUser, int pid, Connector2 con) {
 		try {
 	 		String sql = "INSERT INTO available (login, pid) " +  "VALUES (?, ?)";
@@ -419,12 +427,12 @@ public class UberSQLQuieries {
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
-	    	 	System.out.println("driver set availability hours");
+	    	 	System.out.println("SUCCESSFULL: driver set availability hours");
 	    	 	return true;
 	        }
 	        else
 	        {
-	        	System.out.println("Could not set availability hours");
+	        	System.out.println("NOT SUCCESSFULL: Could not set availability hours");
 	        	return false;
 	        }
 	 	}
@@ -432,6 +440,178 @@ public class UberSQLQuieries {
 	 		System.out.println("cannot execute the query: " + e.getMessage());
 	 	}
 		return false;
+	}
+	
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param con
+	 * @return
+	 */
+	public ArrayList getAvailableReservationTimes(int vin, Connector2 con) {
+		ResultSet rs = null;
+		String output = null;
+		PreparedStatement pstmt = null;
+		ArrayList<String> result = new ArrayList<String>();
+		try {
+	 		String sql = "SELECT * FROM period WHERE pid IN (SELECT pid FROM available WHERE login = (SELECT owner FROM car WHERE vin = ?)";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, vin);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getString("pid") + " | " + rs.getString("fromHour") + " | " + rs.getString("toHour");
+	        	result.add(output);
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		pstmt.close();
+		 		con.conn.close();
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param reservations
+	 * @param con
+	 * @return
+	 */
+	public boolean setReservations(User currentUser, ArrayList<Reservation> reservations, Connector2 con) {
+		
+		for (Reservation reservation : reservations) {
+			try {
+		 		String sql = "INSERT INTO reserve (login, vin, pid, cost, date) " +  "VALUES (?, ?, ?, ?, ?)";
+		        PreparedStatement pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		        pstmt.setString(1, currentUser.get_username());
+		        pstmt.setInt(2, Integer.parseInt(reservation.get_vin()));
+		        pstmt.setInt(3, Integer.parseInt(reservation.get_pid()));
+		        pstmt.setInt(4, reservation.get_cost());
+		        pstmt.setDate(5, reservation.get_Date());
+			 	System.out.println("executing " + sql);
+			 	
+		        if(pstmt.executeUpdate() > 0)
+		        {
+		    	 	System.out.println("SUCCESSFULL: Created one reservation");
+		        }
+		        else
+		        {
+		        	System.out.println("NOT SUCCESSFULL: Could not create reservation");
+		        	return false;
+		        }
+		 	}
+		 	catch(Exception e) {
+		 		System.out.println("cannot execute the query: " + e.getMessage());
+		 		return false;
+		 	}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param con
+	 * @return
+	 */
+	private String getOwnerOfVin(int vin, Connector2 con) {
+		ResultSet rs = null;
+		String output = null;
+		PreparedStatement pstmt = null;
+		try {
+	 		String sql = "SELECT owner FROM car WHERE vin = ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, vin);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getString("owner");
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		pstmt.close();
+		 		con.conn.close();
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return output;
+	}
+	
+	
+	/**
+	 * 
+	 * @param login
+	 * @param con
+	 * @return
+	 */
+	private ArrayList getAvailableDriverTimes(String login, Connector2 con) {
+		ResultSet rs = null;
+		String output = null;
+		PreparedStatement pstmt = null;
+		ArrayList<String> result = new ArrayList<String>();
+		try {
+	 		String sql = "SELECT * FROM period WHERE pid IN (SELECT pid FROM available WHERE login = ?)";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, login);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getString("pid") + " | " + rs.getString("fromHour") + " | " + rs.getString("toHour");
+	        	result.add(output);
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		pstmt.close();
+		 		con.conn.close();
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		
+		return result;
 	}
 
 }
