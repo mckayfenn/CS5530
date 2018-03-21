@@ -193,8 +193,14 @@ public class UberController {
 	}
 	
 	
+	/**
+	 * 
+	 * @param con
+	 * @return
+	 */
 	public ArrayList<Reservation> getPastReservations(Connector2 con) {
-		return sql.getPastReservations(currentUser, con);
+		reservations = sql.getPastReservations(currentUser, con);
+		return reservations;
 	}
 
 }

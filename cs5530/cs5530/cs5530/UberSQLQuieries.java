@@ -672,8 +672,50 @@ public class UberSQLQuieries {
 	}
 	
 	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param con
+	 * @return
+	 */
 	public ArrayList<Reservation> getPastReservations(User currentUser, Connector2 con) {
-		ArrayList<Reservation> reservations = new ArrayList<R>
+		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+		
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+	 		String sql = "SELECT * FROM reserve WHERE login = ? AND date <= current_date() AND pid IN (SELECT pid FROM period WHERE fromHour <= current_time())";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, currentUser.get_username());
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	Reservation r = new Reservation(rs.getString("vin"), rs.getString("pid"), rs.getInt("cost"), rs.getDate("date"));
+	        	reservations.add(r);
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null)
+		 		{
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return reservations;
 	}
 
 }
