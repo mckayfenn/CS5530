@@ -9,8 +9,15 @@ import com.mysql.jdbc.Connection;
 public class UberController {
 	
 	User currentUser;
+	private ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+	
 	UberSQLQuieries sql = new UberSQLQuieries();
 	public UberController() {}
+	
+	
+	public ArrayList<Reservation> getReservations() {
+		return this.reservations;
+	}
 	
 	/**
 	 * 
@@ -130,6 +137,12 @@ public class UberController {
 		return sql.driverViewPeriods(con);
 	}
 	
+	/**
+	 * 
+	 * @param s
+	 * @param con
+	 * @return
+	 */
 	public boolean driverSetAvailability(String s, Connector2 con) {
 		if (!currentUser.get_isDriver())
 			return false;
@@ -137,6 +150,27 @@ public class UberController {
 		int i = Integer.parseInt(parse[0]);
 		System.out.println(i);
 		return sql.driverSetAvailability(currentUser, i, con);
+	}
+	
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param con
+	 * @return
+	 */
+	public ArrayList getAvailableReservationTimes(String vin, Connector2 con) {
+		return sql.getAvailableReservationTimes(Integer.parseInt(vin), con);
+	}
+	
+	
+	/**
+	 * 
+	 * @param con
+	 * @return
+	 */
+	public boolean setReservations(Connector2 con) {
+		return sql.setReservations(currentUser, reservations, con);
 	}
 	
 
