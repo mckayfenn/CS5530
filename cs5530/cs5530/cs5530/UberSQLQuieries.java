@@ -902,15 +902,16 @@ public class UberSQLQuieries {
 	 * @param con
 	 * @return
 	 */
-	public ArrayList<Feedback> getFeedbackList(int vin, Connector2 con) {
+	public ArrayList<Feedback> getFeedbackList(User currentUser, int vin, Connector2 con) {
 		ArrayList<Feedback> result = new ArrayList<Feedback>();
 		
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-	 		String sql = "SELECT * FROM feedback where vin = ?";
+	 		String sql = "SELECT * FROM feedback where vin = ? and login != ?";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setInt(1, vin);
+	        pstmt.setString(2, currentUser.get_username());
 		 	System.out.println("executing " + sql);
 		 	rs = pstmt.executeQuery();
 	        while (rs.next()) {

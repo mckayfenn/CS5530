@@ -226,7 +226,7 @@ public class UberController {
 	 * @return
 	 */
 	public ArrayList<Feedback> getFeedbackList(String vin, Connector2 con) {
-		feedbackList = sql.getFeedbackList(Integer.parseInt(vin), con);
+		feedbackList = sql.getFeedbackList(currentUser, Integer.parseInt(vin), con);
 		return feedbackList;
 	}
 	
