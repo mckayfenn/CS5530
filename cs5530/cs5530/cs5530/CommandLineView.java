@@ -266,17 +266,21 @@ public class CommandLineView {
         		 if(score < 0 || score > 10)
         		 {
         			 System.out.println("Score was invalid entry try again: ");
-        			 break;
         		 }
         		 else if(feedbackText.length() > 199)
         		 {
         			 System.out.println("Feedback comment too large try again: ");
-        			 break;
         		 }
         		 else
         		 {
-        			 controller.giveFeedback(vin, score, feedbackText, con);
-        			 break;
+        			 if(controller.giveFeedback(vin, score, feedbackText, con))
+        			 {
+        				 System.out.println("Succefully gave feedback (cmdline): ");
+        			 }
+        			 else
+        			 {
+        				 System.out.println("Couldnt give feedback (cmdline): ");
+        			 }
         		 }
         	 }
         	 else if (choiceAsInt == 6)
