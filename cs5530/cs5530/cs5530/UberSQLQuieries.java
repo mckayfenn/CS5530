@@ -999,14 +999,56 @@ public class UberSQLQuieries {
 	
 	
 	public ArrayList<User> getAllDrivers(Connector2 con) {
-		ArrayList<User> drivers = new ArrayList<User>();
-		
+		ArrayList<User> drivers = getDriverNames(con);
 		ResultSet rs = null;
-		ResultSet rs2 = null;
 		PreparedStatement pstmt = null;
-		PreparedStatement pstmt2 = null;
+		for(int i = 0; i < drivers.size(); i++)
+		{
+			try {
+	        	String sql2 = "SELECT * FROM car WHERE owner = ?";
+	        	pstmt = (PreparedStatement) con.conn.prepareStatement(sql2);
+	        	pstmt.setString(1, drivers.get(i).get_username());
+	        	
+	        	rs = pstmt.executeQuery();
+	        	
+	        	ArrayList<Car> cars = new ArrayList<Car>();
+	        	while (rs.next()) {
+	        		Car c = new Car(rs.getInt("vin"), rs.getString("category"), rs.getString("model"), rs.getString("make"), rs.getInt("year"), rs.getString("owner"));
+	        		cars.add(c);
+	        		
+	        	}
+	        	drivers.get(i).set_cars(cars);
+	        }
+			catch(Exception e)
+		 	{
+		 		System.out.println("cannot execute the query: " + e.getMessage());
+		 	}
+			finally
+		 	{
+		 		try{
+			 		if (rs!=null && !rs.isClosed()) {
+			 			rs.close();
+			 		}
+			 		if(pstmt != null) {
+				 		pstmt.close();
+			 		}
+		 		}
+		 		catch(Exception e)
+		 		{
+		 			System.out.println("cannot close resultset");
+		 		}
+		 	}
+	 	}
+	 	
+		return drivers;
+	}
+	private static ArrayList<User> getDriverNames(Connector2 con)
+	{
+		ArrayList<User> arr = new ArrayList<User>();
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
 		try {
-			String sql = "SELECT * FROM driver JOIN user ON user.login = driver.login";
+			String sql = "SELECT user.login, user.name, user.password FROM driver JOIN user ON user.login = driver.login";
 	 		
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 		 	System.out.println("executing " + sql);
@@ -1014,23 +1056,10 @@ public class UberSQLQuieries {
 	        while (rs.next()) {
 	        	User u = new User(rs.getString("login"), rs.getString("password"), true);
 	        	u.set_fullname(rs.getString("name"));
-	        	
-
-	        	String sql2 = "SELECT * FROM car WHERE owner = ?";
-	        	pstmt2 = (PreparedStatement) con.conn.prepareStatement(sql2);
-	        	pstmt2.setString(1, u.get_username());
-	        	
-	        	rs2 = pstmt2.executeQuery();
-	        	
-	        	while (rs2.next()) {
-	        		Car c = new Car(rs2.getInt("vin"), rs2.getString("category"), rs2.getString("model"), rs2.getString("make"), rs2.getInt("year"), rs2.getString("owner"));
-	        		u.addCar(c);
-	        	}
-	        	
-	        	drivers.add(u);
+	        	arr.add(u);
 	        }
-	 	}
-	 	catch(Exception e)
+		}
+        catch(Exception e)
 	 	{
 	 		System.out.println("cannot execute the query: " + e.getMessage());
 	 	}
@@ -1040,14 +1069,8 @@ public class UberSQLQuieries {
 		 		if (rs!=null && !rs.isClosed()) {
 		 			rs.close();
 		 		}
-		 		if (rs2!=null && !rs2.isClosed()) {
-		 			rs2.close();
-		 		}
 		 		if(pstmt != null) {
 			 		pstmt.close();
-		 		}
-		 		if(pstmt2 != null) {
-			 		pstmt2.close();
 		 		}
 	 		}
 	 		catch(Exception e)
@@ -1055,8 +1078,8 @@ public class UberSQLQuieries {
 	 			System.out.println("cannot close resultset");
 	 		}
 	 	}
-		
-		return drivers;
+	        	
+		return arr;
 	}
 
 }

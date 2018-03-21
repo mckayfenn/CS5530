@@ -98,17 +98,26 @@ public class CommandLineView {
 					"\n" + "\t" + "Feedback: " + list.get(i).get_text());
 		}
 	}
+	public static void displayDriverFeedback(ArrayList<Feedback> list, int n, User user)
+	{
+		System.out.println("Top " + n + " Most useful feebacks for driver: " + user.get_fullname());
+		for(int i = 0; i < list.size(); i++)
+		{
+			System.out.println(" User: " + list.get(i).get_user() + " Date: " + list.get(i).get_date() + " Car Score: " + list.get(i).get_score() +
+					"\n" + "\t" + "Feedback: " + list.get(i).get_text());
+		}
+	}
 	public static void displayDrivers(ArrayList<User> list)
 	{
 		System.out.println("Pick a driver to view their feedback");
 		for(int i = 0; i < list.size(); i++)
 		{
-			System.out.println(i + ". " + " Driver name: " + list.get(i).get_name());
-			System.out.println("\t" + "Car(s): ");
+			System.out.println(i + ". " + " Driver name: " + list.get(i).get_fullname());
+			System.out.println("\t\t" + "Car(s): ");
 			ArrayList<Car> cars = list.get(i).get_cars();
 			for(int j = 0; j < cars.size(); j ++)
 			{
-				System.out.println("\t\t->" + " Vin #: " + cars.get(i).get_vin() + " Make: " + cars.get(i).get_make() + "Model: " + cars.get(i).get_Make());
+				System.out.println("\t\t\t->" + " Vin #: " + cars.get(j).get_vin() + " Make: " + cars.get(j).get_make() + " Model: " + cars.get(j).get_model());
 			}
 		}
 	}
@@ -350,6 +359,7 @@ public class CommandLineView {
         	 else if (choiceAsInt == 8)
         	 {
         		 //user is viewing most useful feedback
+        		 usefulFeedbackChoices(controller, controller.getAllDrivers(con), con);
         		 
         	 }
         	 else if (choiceAsInt == 9)
@@ -695,7 +705,7 @@ public class CommandLineView {
 	     
 	     while(true)
 	     {
-			 displayFeedback(list, vin);;
+			 displayFeedback(list, vin);
 	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
 	    	 try{
 	    		 choiceAsInt = Integer.parseInt(choice);
@@ -729,6 +739,44 @@ public class CommandLineView {
 	            		 }
 	    				 break;
 	    				 
+	    			 }
+	    		 }
+	    		 break;
+	    	 }
+	     }
+	}
+	private static void usefulFeedbackChoices(UberController controller, ArrayList<User> list, Connector2 con) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+			 displayDrivers(list);
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 0 || choiceAsInt >= list.size())
+	    		 continue;
+	    	 else if (choiceAsInt < list.size())
+	    	 {
+	    		 for(int i = 0; i < list.size(); i++)
+	    		 {
+	    			 if(choiceAsInt == i)
+	    			 {
+	    				 String numEntries = "";
+	    				 System.out.println("How many feedback entries do you wish to view?");
+	            		 while ((numEntries = in.readLine()) == null && numEntries.length() == 0)
+	            			 System.out.println(numEntries);
+//	            		 int n = Integer.parseInt(numEntries);
+//	    				 ArrayList<Feedback> feedback = controller.getFeedbackOnDriver(list.get(i),con);
+//	    				 displayDriverFeedback(feedback, n, list.get(i));
 	    			 }
 	    		 }
 	    		 break;
