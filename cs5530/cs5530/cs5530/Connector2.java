@@ -54,7 +54,7 @@ public class Connector2
 			stmt = conn.createStatement();
 
 			System.out.println("Database connection established");
-			System.out.println("DONE");
+			//System.out.println("DONE");
 		} catch (SQLException sql)
 		{
 			sql.printStackTrace();
