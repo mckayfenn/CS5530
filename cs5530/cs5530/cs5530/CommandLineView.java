@@ -25,11 +25,12 @@ public class CommandLineView {
     	 System.out.println("User options: ");
     	 System.out.println("1. exit ");
     	 System.out.println("2. Declare a favorite car.");
+    	 System.out.println("3. Denote user as trusted");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("3. Add new car");
-	    	 System.out.println("4. Edit exisiting car");
+	    	 System.out.println("4. Add new car");
+	    	 System.out.println("5. Edit exisiting car");
 		 }
 
 	}
@@ -163,6 +164,8 @@ public class CommandLineView {
         String year = "";
         String owner = "";
         String fav = "";
+        String trustedUser = "";
+        String isTrusted = "";
          try
 		 {
 			//remember to replace the password
@@ -197,7 +200,20 @@ public class CommandLineView {
 	            		 else
 	            			 System.out.println("Failed to set as favorite.");
 	            	 }
-	            	 if (choiceAsInt == 3)
+	            	 else if (choiceAsInt == 3) {
+	            		 // user is dclaring if another user is trusted or not
+	            		 System.out.println("Enter the login/username of the person you wish to denote: ");
+	            		 while ((trustedUser = in.readLine()) == null && trustedUser.length() == 0)
+	            			 System.out.println(trustedUser);
+	            		 System.out.println("Do you trust them? (yes/no) ");
+	            		 while ((isTrusted = in.readLine()) == null && isTrusted.length() == 0)
+	            			 System.out.println(isTrusted);
+	            		 if(controller.declareTrusted(trustedUser, isTrusted, con))
+	            			 System.out.println("Successfully trusted " + trustedUser + " as a trustworthy fellow.");
+	            		 else
+	            			 System.out.println("Failed to set as trusted.");
+	            	 }
+	            	 else if (choiceAsInt == 4)
 	            	 {
 	            		 //driver is adding new car
 	            		 System.out.println("please enter the info of the new car: ");
@@ -231,7 +247,7 @@ public class CommandLineView {
 	            		 
 	            		 
 	            	 }
-	            	 else if (choiceAsInt == 4)
+	            	 else if (choiceAsInt == 5)
 	            	 {	 
 	            		 //driver is editing an existing car
 	            		 System.out.println("Vin # of Car you wish to edit: ");
