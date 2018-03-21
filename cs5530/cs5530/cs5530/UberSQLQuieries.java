@@ -455,7 +455,7 @@ public class UberSQLQuieries {
 		PreparedStatement pstmt = null;
 		ArrayList<String> result = new ArrayList<String>();
 		try {
-	 		String sql = "SELECT * FROM period WHERE pid IN (SELECT pid FROM available WHERE login = (SELECT owner FROM car WHERE vin = ?)";
+	 		String sql = "SELECT * FROM period WHERE pid IN (SELECT pid FROM available WHERE login = (SELECT owner FROM car WHERE vin = ?))";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setInt(1, vin);
 		 	System.out.println("executing " + sql);

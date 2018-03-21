@@ -22,12 +22,12 @@ public class CommandLineView {
     	 System.out.println("2. register new user");
     	 System.out.println("3. exit ");
 	}
-	public static void displayResConfirmationInfo(String vin, int cost, String date, String times)
+	public static void displayResConfirmationInfo(String vin, int cost, String date)
 	{
 		 System.out.println("Confirmation information before finalizing reservation");
     	 System.out.println("Car vin #: " + vin);
     	 System.out.println("Date of reservation: " + date);
-    	 System.out.println("Time of reservation: " + times);
+    	 //System.out.println("Time of reservation: " + times);
     	 System.out.println("Bidding Cost: " + cost);
 	}
 	public static void displayReservationStatusChoices()
@@ -354,6 +354,7 @@ public class CommandLineView {
         String date = "";
 		System.out.println("Please enter reservation information: ");
 		 System.out.println("Vin # for car you wish to reserve: ");
+		 try {
 		 while ((vin = in.readLine()) == null && vin.length() == 0)
 			 System.out.println(vin);
 		 System.out.println("Date of reservation: ");
@@ -362,6 +363,11 @@ public class CommandLineView {
 		 System.out.println("Cost: ");
 		 while ((cost = in.readLine()) == null && cost.length() == 0)
 			 System.out.println(cost);
+		 }
+		 catch(Exception e)
+		 {
+			 e.getMessage();
+		 }
 		 if(user != null && cost != null)
 		 {
 			 selectAvailability(user,controller, con, controller.getAvailableReservationTimes(vin, con), user.get_isDriver(), 
@@ -392,11 +398,16 @@ public class CommandLineView {
 	            		 
 	            		 continue;
 	            	 }
-	            	 if (choiceAsInt < 0 | choiceAsInt > list.size())
-	            		 continue;
-	            	 else if (choiceAsInt >= 0 | choiceAsInt < list.size())
+	            	 ArrayList<Integer> listOfPID = new ArrayList<Integer>();
+	            	 for(int i = 0; i < list.size(); i++)
 	            	 {
-	            		 for(int i = 0; i < list.size(); i++)
+	            		 listOfPID.add(Integer.parseInt(list.get(i).split(" ")[0]));
+	            	 }
+	            	 if (!listOfPID.contains(choiceAsInt))
+	            		 continue;
+	            	 else if (listOfPID.contains(choiceAsInt))
+	            	 {
+	            		 for(int i = 0; i <= listOfPID.get(listOfPID.size() - 1); i++)
 	            		 {
 	            			 if(choiceAsInt == i)
 	            			 {
@@ -414,9 +425,9 @@ public class CommandLineView {
 	            				 }
 	            				 else
 	            				 {
-	            					 reservation.set_pid(list.get(i).split(" ")[0]);
+	            					 reservation.set_pid(i + "");
 	            					 controller.getReservations().add(reservation);
-	            					 displayResConfirmationInfo(reservation.get_vin(), reservation.get_cost(), reservation.get_Date().toString(), list.get(i));
+	            					 displayResConfirmationInfo(reservation.get_vin(), reservation.get_cost(), reservation.get_Date().toString());
 	            					 reservationStatusChoices(con, controller, user);
 	            					 break;
 	            				 }
