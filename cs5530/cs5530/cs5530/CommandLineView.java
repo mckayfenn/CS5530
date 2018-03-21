@@ -87,6 +87,14 @@ public class CommandLineView {
 			System.out.println(i + ". " + " Vin #: " + list.get(i).get_vin() + " Date: " + list.get(i).get_Date() + " Cost: " + list.get(i).get_cost());
 		}
 	}
+	public static void displayFeedback(ArrayList<Feedback> list, String vin)
+	{
+		System.out.println("List of feedbacks for car (vin): " + vin + "\nYou can select a feedback to rate it's usefulness");
+		for(int i = 0; i < list.size(); i++)
+		{
+			System.out.println(i + ". " + " Vin #: " + list.get(i).get_vin() + " Date: " + list.get(i).get_Date() + " Cost: " + list.get(i).get_cost());
+		}
+	}
 	
 	public static void main(String[] args) {
 		UberController controller = new UberController();
