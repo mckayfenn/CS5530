@@ -425,8 +425,22 @@ public class CommandLineView {
 		String choice;
         int choiceAsInt = 0;
 			//remember to replace the password
-	 
-	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        if(list.size() <= 0)
+        {
+        	if(isReserving)
+        	{
+        		System.out.println("No (more) available times for that car");
+        		reserveCar(user, controller, con, in);
+        		return;
+        	}
+        	else
+        	{
+        		System.out.println("All times already selected");
+        		return;
+        	}
+        }
+	
 	     
 	     while(true)
 	     {
@@ -467,7 +481,7 @@ public class CommandLineView {
 	    				 }
 	    				 else
 	    				 {
-	    					 //here means a user/driver is reserving a ride
+	    					 //here means a user/driver is reserving a ride from available times
 	    					 reservation.set_pid(i + "");
 	    					 controller.getReservations().add(reservation);
 	    					 displayResConfirmationInfo(reservation.get_vin(), reservation.get_cost(), reservation.get_Date().toString());
@@ -538,6 +552,11 @@ public class CommandLineView {
 	{
 		String choice;
         int choiceAsInt = 0;
+        if(list.size() <= 0)
+        {
+        	System.out.println("No Past Reservations to display");
+        	return;
+        }
 	 
 	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	     
@@ -603,9 +622,17 @@ public class CommandLineView {
 	    	 else if (choiceAsInt == 2)
 	    	 {
 	    		 //make another ride
-	    		 selectPastReservations(controller, list, con);
-	    		 break;
-	    		 
+	    		 if(list.size() <= 0 )
+	    		 {
+	    			 System.out.println("No other reservations to select, choose another option");
+	    			 rideStatusChoices(controller, con, list);
+	    		 }
+	    		 else
+	    		 {
+		    		 selectPastReservations(controller, list, con);
+		    		 break;
+	    		 }
+
 	    	 }
 	    	 else if (choiceAsInt == 3)
 	    	 {
