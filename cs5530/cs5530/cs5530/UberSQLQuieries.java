@@ -996,5 +996,67 @@ public class UberSQLQuieries {
 		
 		return result;
 	}
+	
+	
+	public ArrayList<User> getAllDrivers(Connector2 con) {
+		ArrayList<User> drivers = new ArrayList<User>();
+		
+		ResultSet rs = null;
+		ResultSet rs2 = null;
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		try {
+			String sql = "SELECT * FROM driver JOIN user ON user.login = driver.login";
+	 		
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	User u = new User(rs.getString("login"), rs.getString("password"), true);
+	        	u.set_fullname(rs.getString("name"));
+	        	
+
+	        	String sql2 = "SELECT * FROM car WHERE owner = ?";
+	        	pstmt2 = (PreparedStatement) con.conn.prepareStatement(sql2);
+	        	pstmt2.setString(1, u.get_username());
+	        	
+	        	rs2 = pstmt2.executeQuery();
+	        	
+	        	while (rs2.next()) {
+	        		Car c = new Car(rs2.getInt("vin"), rs2.getString("category"), rs2.getString("model"), rs2.getString("make"), rs2.getInt("year"), rs2.getString("owner"));
+	        		u.addCar(c);
+	        	}
+	        	
+	        	drivers.add(u);
+	        }
+	 	}
+	 	catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if (rs2!=null && !rs2.isClosed()) {
+		 			rs2.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+		 		if(pstmt2 != null) {
+			 		pstmt2.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return drivers;
+	}
 
 }

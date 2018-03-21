@@ -9,6 +9,7 @@ import com.mysql.jdbc.Connection;
 public class UberController {
 	
 	User currentUser;
+	private ArrayList<User> drivers = new ArrayList<User>();
 	private ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 	private ArrayList<Ride> rides = new ArrayList<Ride>();
 	private ArrayList<Feedback> feedbackList = new ArrayList<Feedback>();
@@ -27,6 +28,10 @@ public class UberController {
 	
 	public ArrayList<Feedback> getFeedbackRatingList() {
 		return this.feedbackList;
+	}
+	
+	public ArrayList<User> getDrivers() {
+		return this.drivers;
 	}
 	
 	/**
@@ -240,6 +245,17 @@ public class UberController {
 	 */
 	public boolean setFeedbackRating(int fid, int rating, Connector2 con) {
 		return sql.setFeedbackRating(currentUser, fid, rating, con);
+	}
+	
+	
+	/**
+	 * 
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<User> getAllDrivers(Connector2 con) {
+		drivers = sql.getAllDrivers(con);
+		return drivers;
 	}
 
 }
