@@ -691,9 +691,22 @@ public class CommandLineView {
 	    		 {
 	    			 if(choiceAsInt == i)
 	    			 {
+	    				 String rating = "";
 	    				 Feedback fb = new Feedback(list.get(i).get_user(), list.get(i).get_fid(), list.get(i).get_score(), list.get(i).get_text(), list.get(i).get_vin(), list.get(i).get_date());
 	    				 list.remove(list.get(i));
-	    				 //controller.
+	    				 System.out.println("Your rating (0-2 only, 0 = useless, 1 = usefull, 2 = very usefull): ");
+	            		 while ((rating = in.readLine()) == null && rating.length() == 0)
+	            			 System.out.println(rating);
+	            		 int ratingAsInt = Integer.parseInt(rating);
+	            		 if(ratingAsInt != 0 || ratingAsInt != 1 || ratingAsInt != 2)
+	            		 {
+	            			 System.out.println("Invalid rating, it must be 0 1 or 2");
+	            			 viewOrSelectFeedback(controller, list, con, vin);
+	            		 }
+	            		 else
+	            		 {
+		    				 controller.setFeedbackRating(list.get(i).get_fid(), ratingAsInt, con);
+	            		 }
 	    				 break;
 	    				 
 	    			 }
