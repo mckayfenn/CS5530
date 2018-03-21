@@ -30,11 +30,11 @@ public class CommandLineView {
     	 //System.out.println("Time of reservation: " + times);
     	 System.out.println("Bidding Cost: " + cost);
 	}
-	public static void displayRideConfirmationInfo(Ride ride)
+	public static void displayRideConfirmation(Ride ride)
 	{
 		 System.out.println("Confirmation information before finalizing ride and completed reservation");
     	 System.out.println("Car vin #: " + ride.get_vin());
-    	 System.out.println("Date of ride: " + ride.get_date());
+    	 System.out.println("Date of ride: " + ride.get_Date());
     	 System.out.println("Cost of ride: " + ride.get_pid());
 	}
 	public static void displayReservationStatusChoices()
@@ -311,7 +311,7 @@ public class CommandLineView {
         	 else if(choiceAsInt == 6)
         	 {
         		 //user is marking reservation as ride
-        		 selectPastReservations();
+        		 selectPastReservations(controller,controller.getPastReservations(con), con);
         		 
         	 }
         	 else if (choiceAsInt == 7)
@@ -403,7 +403,7 @@ public class CommandLineView {
 		 try {
 		 while ((vin = in.readLine()) == null && vin.length() == 0)
 			 System.out.println(vin);
-		 System.out.println("Date of reservation: ");
+		 System.out.println("Date of reservation (Required Format: 'DD-MM-YYYY'): ");
 		 while ((date = in.readLine()) == null && date.length() == 0)
 			 System.out.println(date);
 		 System.out.println("Cost: ");
@@ -595,15 +595,14 @@ public class CommandLineView {
 	    	 else if (choiceAsInt == 1)
 	    	 {
 	    		 //confirm all rides
-//	    		 controller.setReservations(con);
-//	    		 controller.getReservations().clear();
+	    		 controller.setRides(con);
+	    		 controller.getRides().clear();
 	    		 break;
 	    		 
 	    	 }
 	    	 else if (choiceAsInt == 2)
 	    	 {
 	    		 //make another ride
-//	    		 reserveCar(user, controller, con, in);
 	    		 selectPastReservations(controller, list, con);
 	    		 break;
 	    		 
@@ -611,7 +610,7 @@ public class CommandLineView {
 	    	 else if (choiceAsInt == 3)
 	    	 {
 	    		 //cancel all rides
-	    		 //controller.getReservations().clear();
+	    		 controller.getRides().clear();
 	    		 break;
 	    	 }
 	    	 else
