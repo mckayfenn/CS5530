@@ -182,8 +182,9 @@ public class UberController {
 	 * @param con
 	 * @return
 	 */
-	public boolean giveFeedback(String vin, String score, String feedback, Connector2 con) {
-		return sql.giveFeedback(currentUser, vin, score, feedback, con);
+	public boolean giveFeedback(String vin, int score, String feedback, Connector2 con) {
+		int v = Integer.parseInt(vin);
+		return sql.giveFeedback(currentUser, v, score, feedback, con);
 	}
 
 }
