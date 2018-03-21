@@ -10,6 +10,7 @@ public class UberController {
 	
 	User currentUser;
 	private ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+	private ArrayList<Ride> rides = new ArrayList<Ride>();
 	
 	UberSQLQuieries sql = new UberSQLQuieries();
 	public UberController() {}
@@ -17,6 +18,10 @@ public class UberController {
 	
 	public ArrayList<Reservation> getReservations() {
 		return this.reservations;
+	}
+	
+	public ArrayList<Ride> getRides() {
+		return this.rides;
 	}
 	
 	/**
@@ -185,6 +190,11 @@ public class UberController {
 	public boolean giveFeedback(String vin, int score, String feedback, Connector2 con) {
 		int v = Integer.parseInt(vin);
 		return sql.giveFeedback(currentUser, v, score, feedback, con);
+	}
+	
+	
+	public ArrayList<Reservation> getPastReservations(Connector2 con) {
+		return sql.getPastReservations(currentUser, con);
 	}
 
 }

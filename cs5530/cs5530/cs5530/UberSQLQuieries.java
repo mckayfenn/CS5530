@@ -670,5 +670,10 @@ public class UberSQLQuieries {
 		
 		return result;
 	}
+	
+	
+	public ArrayList<Reservation> getPastReservations(User currentUser, Connector2 con) {
+		ArrayList<Reservation> reservations = new ArrayList<R>
+	}
 
 }
