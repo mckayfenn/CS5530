@@ -51,6 +51,33 @@ public class CommandLineView {
     	 System.out.println("2. Mark another reservation as ride");
     	 System.out.println("3. Cancel ride(s)");
 	}
+	public static void displaySearchStatusResults()
+	{
+		System.out.println("Conduct search now or add more search filters?: ");
+	   	System.out.println("1. Conduct search based on filer(s) already chosen");
+	   	System.out.println("2. Add another search filter");
+	   	System.out.println("3. Cancel searching");
+	}
+	public static void displayCars(ArrayList<Car> list) {
+		System.out.println("Results:");
+		for(int i = 0; i < list.size(); i++)
+		{
+			System.out.println("Avg Rating: "+ list.get(i).get_avgFeedbackScore + " Owner: " + list.get(i).get_owner() + " Vin # : " + list.get(i).get_vin() + " Category: " + list.get(i).get_category() + " Make: " + list.get(i).get_make() + 
+					" Model: " + list.get(i).get_model() + " Year: " + list.get(i).get_year()+ "\n");
+		}
+	}
+	public static void displayCategoryOptions()
+	{
+		System.out.println("Pick a Category: ");
+	   	System.out.println("1. Luxury");
+	   	System.out.println("2. Comfort");
+	   	System.out.println("3. Standard");
+	}
+	public static void displayFilterByTrusted()
+	{
+	   	System.out.println("1. Filter results only based on trusted user reviews");
+	   	System.out.println("2. Show all results reguardless of user reviews");
+	}
 	public static void displayUserMenu(String username, boolean isDriver)
 	{
 		 System.out.println("Welcome: " + username + ". Please select from the following: ");
@@ -97,6 +124,26 @@ public class CommandLineView {
 		{
 			System.out.println(i + ". " + " User: " + list.get(i).get_user() + " Date: " + list.get(i).get_date() + " Car Score: " + list.get(i).get_score() +
 					"\n" + "\t" + "Feedback: " + list.get(i).get_text());
+		}
+	}
+	public static void displaySearchFilters(String make, String address, String category)
+	{
+		System.out.println("Make a selection what filter(s) you wish to search for a car: ");
+		if(category == null)
+		{
+		   	 System.out.println("1. Search by category (standard, comfort, luxury): ");
+		}
+		if(address == null)
+		{
+		   	 System.out.println("2. Search by State or City");
+		}
+		if(make == null)
+		{
+		   	 System.out.println("3. Search by car make");
+		}
+		if(make != null && address != null && category != null)
+		{
+			System.out.println("All filters already selected : press 4 to continue");
 		}
 	}
 	public static void displayDriverFeedback(ArrayList<Feedback> list, int n, User user)
@@ -376,8 +423,11 @@ public class CommandLineView {
         	 }
         	 else if (choiceAsInt == 9)
         	 {
-        		 
-        		 
+        		 //user is car browsing
+        		 String searchMake = null;
+        		 String searchAddress = null;
+        		 String searchCategory = null;
+        		 conductCarSearch(controller,con,searchMake, searchAddress, searchCategory);
         	 }
         	 else if (choiceAsInt == 10)
         	 {
@@ -806,6 +856,200 @@ public class CommandLineView {
 	    			 }
 	    		 }
 	    		 break;
+	    	 }
+	     }
+	}
+	private static void conductCarSearch(UberController controller, Connector2 con, String make, String address, String category) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+			 displaySearchFilters(make, address, category);
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 1 || choiceAsInt > 4)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 else if(choiceAsInt == 1) {
+	    		 //user is searching by category
+	    		 if(category == null)
+	    		 {
+	    			 searchByCategory(controller, con, make, address, category);
+		    		 break;
+	    		 }
+	    		 else
+	    		 {
+	    			 System.out.println("Already filterd by category, select another filter:");
+					 continue;
+	    		 }
+	    	 }
+			 else if(choiceAsInt == 2) {
+				//user is searching by state or city
+				 if(address == null)
+				 {
+					 System.out.println("Type in city or state (Ex: Houston, Texas, Boston:");
+	        		 while ((address = in.readLine()) == null && address.length() == 0)
+	        			 System.out.println(address);
+	        		 searchStatusChoice(controller, con, make, address, category);
+	        		 break;
+				 }
+				 else
+				 {
+					 System.out.println("Already filterd by city or state, select another filter:");
+					 continue;
+				 }
+			 }
+			 else if(choiceAsInt == 3) {
+			 //user is searching by make
+				 if(make == null)
+				 {
+					 System.out.println("Type the make you desire (Ex: Honda, Ford, Audi) :");
+	        		 while ((make = in.readLine()) == null && make.length() == 0)
+	        			 System.out.println(make);
+	        		 searchStatusChoice(controller, con, make, address, category);
+	        		 break;
+				 }
+				 else
+				 {
+					 System.out.println("Already filterd by make, select another filter:");
+					 continue;
+				 }
+			 }
+			 else if(choiceAsInt == 4)
+			 {
+				 searchStatusChoice(controller, con, make, address, category);
+        		 break;
+			 }
+			 
+	     }
+	}
+	private static void searchStatusChoice(UberController controller, Connector2 con, String make, String address, String category) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+	    	 displaySearchStatusResults();
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 1 || choiceAsInt > 3)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 else if(choiceAsInt == 1) {
+	    		 //user wants to conduct search
+	    		 if(filterByTrustedUsers())
+	    		 {
+	    			 displayCars(controller.getCarsBySearch(address, make, category, true, con));
+	    		 }
+	    		 else
+	    		 {
+	    			 displayCars(controller.getCarsBySearch(address, make, category, false, con));
+	    		 }
+	    		 break;
+	    		 
+	    	 }
+			 else if(choiceAsInt == 2) {
+				//user wants to add more filters
+				 conductCarSearch(controller, con, make, address, category);
+				 break;
+				 
+			 }
+			 else if(choiceAsInt == 3) {
+				 //user wants to cancel search
+				 return;
+			 }
+	     }
+	}
+	private static void searchByCategory(UberController controller, Connector2 con, String make, String address, String category) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+	    	 displayCategoryOptions();
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 1 || choiceAsInt > 3)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 else if(choiceAsInt == 1) {
+	    		 //user wants to conduct search by Luxury
+	    		 category = "Luxury";
+	    		 searchStatusChoice(controller, con, make, address, category);
+	    		 break;
+	    		 
+	    	 }
+			 else if(choiceAsInt == 2) {
+				//user wants to conduct search by Comfort
+				 category = "Comfort";
+				 searchStatusChoice(controller, con, make, address, category);
+				 break;
+			 }
+			 else if(choiceAsInt == 3) {
+				//user wants to conduct search by Standard
+				 category = "Standard";
+				 searchStatusChoice(controller, con, make, address, category);
+				 break;
+			 }
+	     }
+	}
+	private static boolean filterByTrustedUsers() throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+	    	 displayFilterByTrusted();
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 1 || choiceAsInt > 2)
+	    	 {
+	    		 continue;
+	    		 
+	    	 }
+	    	 else if(choiceAsInt == 1) {
+	    		 //user wants to conduct search by trusted reviews
+	    		 return true;
+	    	 }
+	    	 else
+	    	 {
+	    		 return false;
 	    	 }
 	     }
 	}
