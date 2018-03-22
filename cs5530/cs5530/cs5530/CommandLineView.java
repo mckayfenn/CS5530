@@ -62,7 +62,7 @@ public class CommandLineView {
 		System.out.println("Results:");
 		for(int i = 0; i < list.size(); i++)
 		{
-			System.out.println("Avg Rating: "+ list.get(i).get_avgFeedbackScore + " Owner: " + list.get(i).get_owner() + " Vin # : " + list.get(i).get_vin() + " Category: " + list.get(i).get_category() + " Make: " + list.get(i).get_make() + 
+			System.out.println("Avg Rating: "+ list.get(i).get_avgFeedbackScore() + " Owner: " + list.get(i).get_owner() + " Vin # : " + list.get(i).get_vin() + " Category: " + list.get(i).get_category() + " Make: " + list.get(i).get_make() + 
 					" Model: " + list.get(i).get_model() + " Year: " + list.get(i).get_year()+ "\n");
 		}
 	}
