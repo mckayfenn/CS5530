@@ -1098,7 +1098,7 @@ public class UberSQLQuieries {
 			 	System.out.println("executing " + sql);
 			 	rs = pstmt.executeQuery();
 		        while (rs.next()) {
-		        	Feedback f = new Feedback(rs.getString("login"), rs.getInt("fid"), rs.getInt("score"), rs.getString("text"), rs.getInt("vin"), rs.getDate("date"));
+		        	Feedback f = new Feedback(rs.getString("login"), rs.getInt("fid"), rs.getInt("score"), rs.getString("text"), rs.getInt("vin"), rs.getDate("fbdate"));
 		        	f.set_rating(Integer.parseInt(rs.getString("rating")));
 		        	result.add(f);
 		        }
