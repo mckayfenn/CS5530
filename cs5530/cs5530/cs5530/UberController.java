@@ -265,5 +265,9 @@ public class UberController {
 	{
 		return address.split("-");
 	}
+	public ArrayList<Feedback> getFeedbackOnDriver(User u, int limit, Connector2 con) {
+		feedbackList = sql.getFeedbackOnDriver(u, limit, con);
+		return feedbackList;
+	}
 
 }
