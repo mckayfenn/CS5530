@@ -1134,14 +1134,22 @@ public class UberSQLQuieries {
 	}
 	
 	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param address
+	 * @param make
+	 * @param category
+	 * @param con
+	 * @return
+	 */
 	public ArrayList<Car> getCarsBySearch(User currentUser, String address, String make, String category, Connector2 con) {
 		ArrayList<Car> cars = new ArrayList<Car>();
 		
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-			String sql = "select * from car where (address is NULL OR address like '%?%') or (make is NULL OR make like '%?%') or (category is NULL or category like '%?%')";
-	 		
+			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (address is NULL OR address like '%?%') or (make is NULL OR make like '%?%') or (category is NULL or category like '%?%')) A left outer join feedback F on A.vin = F.vin group by A.vin order by avgscore Desc";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, address);
 	        pstmt.setString(2, make);
@@ -1150,6 +1158,7 @@ public class UberSQLQuieries {
 		 	rs = pstmt.executeQuery();
 	        while (rs.next()) {
 	        	Car c = new Car(rs.getInt("vin"), rs.getString("category"), rs.getString("model"), rs.getString("make"), rs.getInt("year"), rs.getString("owner"));
+	        	c.set_avgFeedbackScore(rs.getDouble("avgscore"));
         		cars.add(c);
 	        }
 		}
@@ -1176,11 +1185,58 @@ public class UberSQLQuieries {
 		return cars;
 	}
 	
+	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param address
+	 * @param make
+	 * @param category
+	 * @param con
+	 * @return
+	 */
 	public ArrayList<Car> getCarsBySearchTrusted(User currentUser, String address, String make, String category, Connector2 con) {
-		ArrayList<Car> result = new ArrayList<Car>();
+		ArrayList<Car> cars = new ArrayList<Car>();
 		
 		
-		return result;
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (address is NULL OR address like '%?%') or (make is NULL OR make like '%?%') or (category is NULL or category like '%?%')) A left outer join (select * from feedback join trust on feedback.login = trust.login2 and trust.isTrusted = 1 where trust.login1 = ?) F on A.vin = F.vin group by A.vin order by avgscore Desc";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, address);
+	        pstmt.setString(2, make);
+	        pstmt.setString(3, category);
+	        pstmt.setString(4, currentUser.get_username());
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	Car c = new Car(rs.getInt("vin"), rs.getString("category"), rs.getString("model"), rs.getString("make"), rs.getInt("year"), rs.getString("owner"));
+	        	c.set_avgFeedbackScore(rs.getDouble("avgscore"));
+        		cars.add(c);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return cars;
 	}
 
 }

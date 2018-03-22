@@ -9,6 +9,8 @@ public class Car {
 	private int _year;
 	private String _owner;
 	
+	private double _avgFeedbackScore;
+	
 	public Car(int vin, String category, String model, String make, int year, String owner) {
 		this.set_vin(vin);
 		this.set_category(category);
@@ -54,6 +56,16 @@ public class Car {
 	}
 	public void set_owner(String _owner) {
 		this._owner = _owner;
+	}
+
+
+	public double get_avgFeedbackScore() {
+		return _avgFeedbackScore;
+	}
+
+
+	public void set_avgFeedbackScore(double _avgFeedbackScore) {
+		this._avgFeedbackScore = _avgFeedbackScore;
 	}
 	
 	
