@@ -389,17 +389,21 @@ public class CommandLineView {
         		 System.out.println("Category (Must be exactly(case sensitive): Standard, Comfort or Luxury): ");
         		 while ((category = in.readLine()) == null && category.length() == 0)
         			 System.out.println(category);
-        		 if(!category.equals("Luxury") || !category.equals("Standard") || !category.equals("Comfort"))
+        		 if(category.equals("Luxury") || category.equals("Standard") || category.equals("Comfort"))
+        		 {
+        			 
+        		 }
+        		 else
         		 {
         			 System.out.println("Incorrect category entered, try again");
-        			 break;
+        			 continue;
         		 }
-        		 System.out.println("Model: ");
-        		 while ((model = in.readLine()) == null && model.length() == 0)
-        			 System.out.println(model);
         		 System.out.println("Make: ");
         		 while ((make = in.readLine()) == null && make.length() == 0)
         			 System.out.println(make);
+        		 System.out.println("Model: ");
+        		 while ((model = in.readLine()) == null && model.length() == 0)
+        			 System.out.println(model);
         		 System.out.println("Year: ");
         		 while ((year = in.readLine()) == null && year.length() == 0)
         			 System.out.println(year);
@@ -428,12 +432,12 @@ public class CommandLineView {
         		 System.out.println("New Category: ");
         		 while ((category = in.readLine()) == null && category.length() == 0)
         			 System.out.println(category);
-        		 System.out.println("New Model: ");
-        		 while ((model = in.readLine()) == null && model.length() == 0)
-        			 System.out.println(model);
         		 System.out.println("New Make: ");
         		 while ((make = in.readLine()) == null && make.length() == 0)
         			 System.out.println(make);
+        		 System.out.println("New Model: ");
+        		 while ((model = in.readLine()) == null && model.length() == 0)
+        			 System.out.println(model);
         		 System.out.println("New Year: ");
         		 while ((year = in.readLine()) == null && year.length() == 0)
         			 System.out.println(year);
