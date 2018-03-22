@@ -1081,5 +1081,50 @@ public class UberSQLQuieries {
 	        	
 		return arr;
 	}
+	
+	
+	public ArrayList<Feedback> getFeedbackOnDriver(User u, int limit, Connector2 con) {
+		ArrayList<Feedback> result = new ArrayList<Feedback>();
+		
+		for(Car c : u.get_cars()) {
+			ResultSet rs = null;
+			PreparedStatement pstmt = null;
+			try {
+				String sql = "select F.fid, F.score, F.login, F.text, F.vin, F.fbdate, A.rating from feedback F left outer join (select fid, avg(rating) as rating from rates where fid IN (select fid from feedback where vin = 9999) group by fid) A on F.fid = A.fid where F.vin = ? order by rating DESC limit ?";
+		 		
+		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		        pstmt.setInt(1, c.get_vin());
+		        pstmt.setInt(2, limit);
+			 	System.out.println("executing " + sql);
+			 	rs = pstmt.executeQuery();
+		        while (rs.next()) {
+		        	Feedback f = new Feedback(rs.getString("login"), rs.getInt("fid"), rs.getInt("score"), rs.getString("text"), rs.getInt("vin"), rs.getDate("date"));
+		        	f.set_rating(Integer.parseInt(rs.getString("rating")));
+		        	result.add(f);
+		        }
+			}
+	        catch(Exception e)
+		 	{
+		 		System.out.println("cannot execute the query: " + e.getMessage());
+		 	}
+			finally
+		 	{
+		 		try{
+			 		if (rs!=null && !rs.isClosed()) {
+			 			rs.close();
+			 		}
+			 		if(pstmt != null) {
+				 		pstmt.close();
+			 		}
+		 		}
+		 		catch(Exception e)
+		 		{
+		 			System.out.println("cannot close resultset");
+		 		}
+		 	}
+		}
+		
+		return result;
+	}
 
 }

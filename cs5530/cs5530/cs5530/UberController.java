@@ -257,5 +257,10 @@ public class UberController {
 		drivers = sql.getAllDrivers(con);
 		return drivers;
 	}
+	
+	public ArrayList<Feedback> getFeedbackOnDriver(User u, int limit, Connector2 con) {
+		feedbackList = sql.getFeedbackOnDriver(u, limit, con);
+		return feedbackList;
+	}
 
 }
