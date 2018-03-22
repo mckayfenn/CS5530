@@ -1149,7 +1149,7 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (address is NULL OR address like '%?%') or (make is NULL OR make like '%?%') or (category is NULL or category like '%?%')) A left outer join feedback F on A.vin = F.vin group by A.vin order by avgscore Desc";
+			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (address like '%?%') or (make like '%?%') or (category like '%?%')) A left outer join feedback F on A.vin = F.vin group by A.vin order by avgscore Desc";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, address);
 	        pstmt.setString(2, make);
@@ -1202,7 +1202,7 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (address is NULL OR address like '%?%') or (make is NULL OR make like '%?%') or (category is NULL or category like '%?%')) A left outer join (select * from feedback join trust on feedback.login = trust.login2 and trust.isTrusted = 1 where trust.login1 = ?) F on A.vin = F.vin group by A.vin order by avgscore Desc";
+			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (address like '%?%') or (make like '%?%') or (category like '%?%')) A left outer join (select * from feedback join trust on feedback.login = trust.login2 and trust.isTrusted = 1 where trust.login1 = ?) F on A.vin = F.vin group by A.vin order by avgscore Desc";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, address);
 	        pstmt.setString(2, make);

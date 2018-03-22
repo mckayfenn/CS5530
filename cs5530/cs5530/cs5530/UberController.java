@@ -281,6 +281,12 @@ public class UberController {
 	
 	public ArrayList<Car> getCarsBySearch(String address, String make, String category, boolean wantsTrusted, Connector2 con) {
 		ArrayList<Car> result;
+		if (address == null)
+			address = "";
+		if (make == null)
+			make = "";
+		if (category == null)
+			category = "";
 		if (wantsTrusted)
 			result = sql.getCarsBySearchTrusted(currentUser, address, make, category, con);
 		else
