@@ -1149,11 +1149,11 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (year like '%' || ? || '%') or (make like '%' || ? || '%') or (category like '%' || ? || '%')) A left outer join feedback F on A.vin = F.vin group by A.vin order by avgscore Desc";
-	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
-	        pstmt.setString(1, address);
-	        pstmt.setString(2, make);
-	        pstmt.setString(3, category);
+			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (make like ?) or (category like ?) or car.owner IN (select login from user where address like ?)) A left outer join feedback F on A.vin = F.vin group by A.vin order by avgscore Desc";
+			pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, "%" + make + "%");
+	        pstmt.setString(2, "%" + category + "%");
+	        pstmt.setString(3, "%" + address + "%");
 		 	System.out.println("executing " + sql);
 		 	rs = pstmt.executeQuery();
 	        while (rs.next()) {
@@ -1202,11 +1202,11 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (address like '%?%') or (make like '%?%') or (category like '%?%')) A left outer join (select * from feedback join trust on feedback.login = trust.login2 and trust.isTrusted = 1 where trust.login1 = ?) F on A.vin = F.vin group by A.vin order by avgscore Desc";
+			String sql = "select A.vin, A.category, A.make, A.model, A.year, A.owner, avg(F.score) as avgscore from (select * from car where (make like ?) or (category like ?) or car.owner IN (select login from user where address like ?)) A left outer join (select * from feedback join trust on feedback.login = trust.login2 and trust.isTrusted = 1 where trust.login1 = ?) F on A.vin = F.vin group by A.vin order by avgscore Desc";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
-	        pstmt.setString(1, address);
-	        pstmt.setString(2, make);
-	        pstmt.setString(3, category);
+	        pstmt.setString(1, "%" + make + "%");
+	        pstmt.setString(2, "%" + category + "%");
+	        pstmt.setString(3, "%" + address + "%");
 	        pstmt.setString(4, currentUser.get_username());
 		 	System.out.println("executing " + sql);
 		 	rs = pstmt.executeQuery();
