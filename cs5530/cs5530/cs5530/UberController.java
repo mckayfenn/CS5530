@@ -265,9 +265,27 @@ public class UberController {
 	{
 		return address.split("-");
 	}
+	
+	/**
+	 * 
+	 * @param u
+	 * @param limit
+	 * @param con
+	 * @return
+	 */
 	public ArrayList<Feedback> getFeedbackOnDriver(User u, int limit, Connector2 con) {
 		feedbackList = sql.getFeedbackOnDriver(u, limit, con);
 		return feedbackList;
+	}
+	
+	
+	public ArrayList<Car> getCarsBySearch(String address, String make, String category, boolean wantsTrusted, Connector2 con) {
+		ArrayList<Car> result;
+		if (wantsTrusted)
+			result = sql.getCarsBySearchTrusted(currentUser, address, make, category, con);
+		else
+			result = sql.getCarsBySearch(currentUser, address, make, category, con);
+		return result;
 	}
 
 }

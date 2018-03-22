@@ -1082,7 +1082,13 @@ public class UberSQLQuieries {
 		return arr;
 	}
 	
-	
+	/**
+	 * 
+	 * @param u
+	 * @param limit
+	 * @param con
+	 * @return
+	 */
 	public ArrayList<Feedback> getFeedbackOnDriver(User u, int limit, Connector2 con) {
 		ArrayList<Feedback> result = new ArrayList<Feedback>();
 		
@@ -1123,6 +1129,56 @@ public class UberSQLQuieries {
 		 		}
 		 	}
 		}
+		
+		return result;
+	}
+	
+	
+	public ArrayList<Car> getCarsBySearch(User currentUser, String address, String make, String category, Connector2 con) {
+		ArrayList<Car> cars = new ArrayList<Car>();
+		
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select * from car where (address is NULL OR address like '%?%') or (make is NULL OR make like '%?%') or (category is NULL or category like '%?%')";
+	 		
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, address);
+	        pstmt.setString(2, make);
+	        pstmt.setString(3, category);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	Car c = new Car(rs.getInt("vin"), rs.getString("category"), rs.getString("model"), rs.getString("make"), rs.getInt("year"), rs.getString("owner"));
+        		cars.add(c);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return cars;
+	}
+	
+	public ArrayList<Car> getCarsBySearchTrusted(User currentUser, String address, String make, String category, Connector2 con) {
+		ArrayList<Car> result = new ArrayList<Car>();
+		
 		
 		return result;
 	}
