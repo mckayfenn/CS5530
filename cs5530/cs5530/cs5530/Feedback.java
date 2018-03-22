@@ -11,7 +11,7 @@ public class Feedback {
 	private int _vin;
 	private Date _date;
 	
-	private int _rating; // this is average useful rating for this fid from rates table
+	private double _rating; // this is average useful rating for this fid from rates table
 	
 	public Feedback(String user, int fid, int score, String text, int vin, Date date) {
 		this.set_user(user);
@@ -70,11 +70,11 @@ public class Feedback {
 		this._user = _user;
 	}
 
-	public int get_rating() {
+	public double get_rating() {
 		return _rating;
 	}
 
-	public void set_rating(int _rating) {
+	public void set_rating(double _rating) {
 		this._rating = _rating;
 	}
 	
