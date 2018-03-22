@@ -63,12 +63,13 @@ public class CommandLineView {
     	 System.out.println("6. Mark reservation as ride");
     	 System.out.println("7. Rate feedback on a car");
     	 System.out.println("8. View most useful feedbacks on driver");
+    	 System.out.println("9. Search for car");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("9. Add new car");
-	    	 System.out.println("10. Edit exisiting car");
-	    	 System.out.println("11. Add availability times");
+	    	 System.out.println("10. Add new car");
+	    	 System.out.println("11. Edit exisiting car");
+	    	 System.out.println("12. Add availability times");
 		 }
 
 	}
@@ -133,6 +134,9 @@ public class CommandLineView {
         String username;
         String password;
         String name;
+        String street;
+        String city;
+        String state;
         String address;
         String phone;
         String isDriver;
@@ -189,9 +193,16 @@ public class CommandLineView {
 	            		 System.out.println("name: ");
 	            		 while ((name = in.readLine()) == null && name.length() == 0)
 	            			 System.out.println(name);
-	            		 System.out.println("address: ");
-	            		 while ((address = in.readLine()) == null && address.length() == 0)
-	            			 System.out.println(address);
+	            		 System.out.println("The next 3 fields are for your home address");
+	            		 System.out.println("Street (Ex: 123 Fake St. Apt #6): ");
+	            		 while ((street = in.readLine()) == null && street.length() == 0)
+	            			 System.out.println(street);
+	            		 System.out.println("City (Ex: Houston): ");
+	            		 while ((city = in.readLine()) == null && city.length() == 0)
+	            			 System.out.println(city);
+	            		 System.out.println("State (Ex): ");
+	            		 while ((state = in.readLine()) == null && state.length() == 0)
+	            			 System.out.println(state);
 	            		 System.out.println("phone #: ");
 	            		 while ((phone = in.readLine()) == null && phone.length() == 0)
 	            			 System.out.println(phone);
@@ -200,6 +211,7 @@ public class CommandLineView {
 	            			 System.out.println(isDriver);
 	            		 if(isDriver != null)
 	            		 {
+	            			address = street + "-" + city + "-" + state;
 	            			if(controller.setNewUser(username, password, name, address, phone, isDriver, con))
 	            			{
 	            				System.out.println("New user successfully registered");
@@ -273,7 +285,7 @@ public class CommandLineView {
         		 
         		 continue;
         	 }
-        	 if (choiceAsInt < 1 | choiceAsInt > 11)
+        	 if (choiceAsInt < 1 | choiceAsInt > 12)
         		 continue;
         	 if (choiceAsInt == 2) {
         		 // driver is declaring a car as their favorite
@@ -364,14 +376,24 @@ public class CommandLineView {
         	 }
         	 else if (choiceAsInt == 9)
         	 {
+        		 
+        		 
+        	 }
+        	 else if (choiceAsInt == 10)
+        	 {
         		 //driver is adding new car
         		 System.out.println("please enter the info of the new car: ");
         		 System.out.println("Vin #: ");
         		 while ((vin = in.readLine()) == null && vin.length() == 0)
         			 System.out.println(vin);
-        		 System.out.println("Category: ");
+        		 System.out.println("Category (Must be exactly(case sensitive): Standard, Comfort or Luxury): ");
         		 while ((category = in.readLine()) == null && category.length() == 0)
         			 System.out.println(category);
+        		 if(!category.equals("Luxury") || !category.equals("Standard") || !category.equals("Comfort"))
+        		 {
+        			 System.out.println("Incorrect category entered, try again");
+        			 break;
+        		 }
         		 System.out.println("Model: ");
         		 while ((model = in.readLine()) == null && model.length() == 0)
         			 System.out.println(model);
@@ -397,7 +419,7 @@ public class CommandLineView {
         		 
         		 
         	 }
-        	 else if (choiceAsInt == 10)
+        	 else if (choiceAsInt == 11)
         	 {	 
         		 //driver is editing an existing car
         		 System.out.println("Vin # of Car you wish to edit: ");
@@ -429,7 +451,7 @@ public class CommandLineView {
         		 }
 
         	 }
-        	 else if (choiceAsInt == 11)
+        	 else if (choiceAsInt == 12)
         	 {	 
         		 //driver is choosing availability times
         		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
@@ -774,9 +796,9 @@ public class CommandLineView {
 	    				 System.out.println("How many feedback entries do you wish to view?");
 	            		 while ((numEntries = in.readLine()) == null && numEntries.length() == 0)
 	            			 System.out.println(numEntries);
-//	            		 int n = Integer.parseInt(numEntries);
-//	    				 ArrayList<Feedback> feedback = controller.getFeedbackOnDriver(list.get(i),con);
-//	    				 displayDriverFeedback(feedback, n, list.get(i));
+	            		 int n = Integer.parseInt(numEntries);
+	    				 ArrayList<Feedback> feedback = controller.getFeedbackOnDriver(list.get(i), n,con);
+	    				 displayDriverFeedback(feedback, n, list.get(i));
 	    			 }
 	    		 }
 	    		 break;

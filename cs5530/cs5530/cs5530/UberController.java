@@ -257,5 +257,13 @@ public class UberController {
 		drivers = sql.getAllDrivers(con);
 		return drivers;
 	}
+	/**
+	 * returns array list given address [street, city, state]
+	 * @return
+	 */
+	public String[] parseAddress(String address)
+	{
+		return address.split("-");
+	}
 
 }
