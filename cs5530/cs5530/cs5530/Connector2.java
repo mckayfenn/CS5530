@@ -21,7 +21,7 @@ public class Connector2
 		String sshUser = "5530u30";
 		String sshPassword = "1ua6qudb";
 
-		int lport = 5664;
+		int lport = 5665;
 		String rhost = "localhost";
 		int rport = 3306;
 

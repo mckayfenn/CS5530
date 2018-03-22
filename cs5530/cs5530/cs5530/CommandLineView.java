@@ -101,11 +101,11 @@ public class CommandLineView {
 	}
 	public static void displayDriverFeedback(ArrayList<Feedback> list, int n, User user)
 	{
-		System.out.println("Top " + n + " Most useful feebacks for driver: " + user.get_fullname());
+		System.out.println("Top " + n + " Most useful feebacks for driver: " + user.get_fullname() + "\n");
 		for(int i = 0; i < list.size(); i++)
 		{
-			System.out.println(" User: " + list.get(i).get_user() + " Date: " + list.get(i).get_date() + " Car Score: " + list.get(i).get_score() +
-					"\n" + "\t" + "Feedback: " + list.get(i).get_text());
+			System.out.println("Usefulness Rating: " + list.get(i).get_rating() + " -User: " + list.get(i).get_user() + " -Date: " + list.get(i).get_date() + " -Car Score: " + list.get(i).get_score() +
+					"\n" + "\t" + "-Feedback: " + list.get(i).get_text() + "\n");
 		}
 	}
 	public static void displayDrivers(ArrayList<User> list)
