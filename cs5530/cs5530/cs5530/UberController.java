@@ -278,7 +278,15 @@ public class UberController {
 		return feedbackList;
 	}
 	
-	
+	/**
+	 * 
+	 * @param address
+	 * @param make
+	 * @param category
+	 * @param wantsTrusted
+	 * @param con
+	 * @return
+	 */
 	public ArrayList<Car> getCarsBySearch(String address, String make, String category, boolean wantsTrusted, Connector2 con) {
 		ArrayList<Car> result;
 		if (address == null)
@@ -292,6 +300,46 @@ public class UberController {
 		else
 			result = sql.getCarsBySearch(currentUser, address, make, category, con);
 		return result;
+	}
+	
+	/**
+	 * <p>
+	 * Gets m most ridden cars per category. Returns ArrayList of Strings in format
+	 * </p><p>
+	 * "(carcount) | (vin) | (category)"
+	 * </p>
+	 * 
+	 * @param String m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> statisticsGetMostRiddenCars(String m, Connector2 con) {
+		int n = Integer.parseInt(m);
+		if (n <= 0) {
+			System.out.println("Please enter a positive number");
+			return  null;
+		}
+		return sql.statisticsGetMostRiddenCars(n, con);
+	}
+	
+	/**
+	 * <p>
+	 * Gets m most expensive cars per category. Returns ArrayList of Strings in format
+	 * </p><p>
+	 * "(avgcost) | (vin) | (category)"
+	 * </p>
+	 * 
+	 * @param String m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> statisticsGetMostExpensiveCars(String m, Connector2 con) {
+		int n = Integer.parseInt(m);
+		if (n <= 0) {
+			System.out.println("Please enter a positive number");
+			return  null;
+		}
+		return sql.statisticsGetMostExpensiveCars(n, con);
 	}
 
 }

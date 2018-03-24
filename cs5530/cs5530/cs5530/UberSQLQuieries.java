@@ -1238,5 +1238,280 @@ public class UberSQLQuieries {
 		
 		return cars;
 	}
+	
+	
+	/**
+	 * 
+	 * @param m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> statisticsGetMostRiddenCars(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		result.addAll(getMostCarLuxury(m, con));
+		result.addAll(getMostCarComfort(m, con));
+		result.addAll(getMostCarStandard(m, con));
+		
+		return result;
+	}
+	
+	private ArrayList<String> getMostCarLuxury(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select count(car.vin) as carcount, car.vin as vin, car.category as category from ride join car on ride.vin = car.vin where category = 'Luxury' group by car.vin order by count(car.vin) DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("carcount") + " | " + rs.getInt("vin") + " | " + rs.getString("category");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	
+	
+	private ArrayList<String> getMostCarComfort(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select count(car.vin) as carcount, car.vin as vin, car.category as category from ride join car on ride.vin = car.vin where category = 'Comfort' group by car.vin order by count(car.vin) DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("carcount") + " | " + rs.getInt("vin") + " | " + rs.getString("category");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	
+	
+	private ArrayList<String> getMostCarStandard(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select count(car.vin) as carcount, car.vin as vin, car.category as category from ride join car on ride.vin = car.vin where category = 'Standard' group by car.vin order by count(car.vin) DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("carcount") + " | " + rs.getInt("vin") + " | " + rs.getString("category");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * @param m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> statisticsGetMostExpensiveCars(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		result.addAll(getMostExpensiveLuxury(m, con));
+		result.addAll(getMostExpensiveComfort(m, con));
+		result.addAll(getMostExpensiveStandard(m, con));
+		
+		return result;
+	}
+	
+	
+	private ArrayList<String> getMostExpensiveLuxury(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select avg(ride.cost) as avgride, car.vin, car.category from ride join car on ride.vin = car.vin where car.category = 'Luxury' group by car.vin order by avgride DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("avgride") + " | " + rs.getInt("vin") + " | " + rs.getString("category");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	private ArrayList<String> getMostExpensiveComfort(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select avg(ride.cost) as avgride, car.vin, car.category from ride join car on ride.vin = car.vin where car.category = 'Comfort' group by car.vin order by avgride DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("avgride") + " | " + rs.getInt("vin") + " | " + rs.getString("category");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	private ArrayList<String> getMostExpensiveStandard(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select avg(ride.cost) as avgride, car.vin, car.category from ride join car on ride.vin = car.vin where car.category = 'Standard' group by car.vin order by avgride DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("avgride") + " | " + rs.getInt("vin") + " | " + rs.getString("category");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
 
 }
