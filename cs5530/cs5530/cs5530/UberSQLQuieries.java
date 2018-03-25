@@ -1249,8 +1249,11 @@ public class UberSQLQuieries {
 	public ArrayList<String> statisticsGetMostRiddenCars(int m, Connector2 con) {
 		ArrayList<String> result = new ArrayList<String>();
 		
+		result.add("Luxury");
 		result.addAll(getMostCarLuxury(m, con));
+		result.add("Comfort");
 		result.addAll(getMostCarComfort(m, con));
+		result.add("Standard");
 		result.addAll(getMostCarStandard(m, con));
 		
 		return result;
@@ -1388,8 +1391,11 @@ public class UberSQLQuieries {
 	public ArrayList<String> statisticsGetMostExpensiveCars(int m, Connector2 con) {
 		ArrayList<String> result = new ArrayList<String>();
 		
+		result.add("Luxury");
 		result.addAll(getMostExpensiveLuxury(m, con));
+		result.add("Comfort");
 		result.addAll(getMostExpensiveComfort(m, con));
+		result.add("Standard");
 		result.addAll(getMostExpensiveStandard(m, con));
 		
 		return result;

@@ -78,6 +78,48 @@ public class CommandLineView {
 	   	System.out.println("1. Filter results only based on trusted user reviews");
 	   	System.out.println("2. Show all results reguardless of user reviews");
 	}
+	public static void displayAwardChoices()
+	{
+		System.out.println("1. View most trusted users");
+	   	System.out.println("2. View most useful users");
+	}
+	public static void displayStatisticChoices()
+	{
+		System.out.println("What statistic would you like to view?: ");
+	   	System.out.println("1. List the most popular cars for each category");
+	   	System.out.println("2. List the most expensive cars for each category");
+	   	System.out.println("3. List the most highly rated drivers for each category");
+	}
+	public static void displayStatistics(ArrayList<String> list, String type, String m)
+	{
+		if(type.equals("pop"))
+		{
+			System.out.println("Top" + m + " most popular cars for each category: ");
+		}
+		else if(type.equals("exp"))
+		{
+			System.out.println("Top" + m + " most expensive cars for each category: ");
+		}
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i) + "\n");
+		}
+						
+	}
+	public static void displayUserAwards(ArrayList<String> list, String type, String m)
+	{
+		if(type.equals("trust"))
+		{
+			System.out.println("Top" + m + " most trusted users: ");
+		}
+		else if(type.equals("useful"))
+		{
+			System.out.println("Top" + m + " most useful1: ");
+		}
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i) + "\n");
+		}
+						
+	}
 	public static void displayUserMenu(String username, boolean isDriver)
 	{
 		 System.out.println("Welcome: " + username + ". Please select from the following: ");
@@ -91,12 +133,14 @@ public class CommandLineView {
     	 System.out.println("7. Rate feedback on a car");
     	 System.out.println("8. View most useful feedbacks on driver");
     	 System.out.println("9. Search for car");
+    	 System.out.println("10. View Statistics");
+    	 System.out.println("11. User awards");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("10. Add new car");
-	    	 System.out.println("11. Edit exisiting car");
-	    	 System.out.println("12. Add availability times");
+	    	 System.out.println("12. Add new car");
+	    	 System.out.println("13. Edit exisiting car");
+	    	 System.out.println("14. Add availability times");
 		 }
 
 	}
@@ -332,7 +376,7 @@ public class CommandLineView {
         		 
         		 continue;
         	 }
-        	 if (choiceAsInt < 1 | choiceAsInt > 12)
+        	 if (choiceAsInt < 1 | choiceAsInt > 14)
         		 continue;
         	 if (choiceAsInt == 2) {
         		 // driver is declaring a car as their favorite
@@ -431,6 +475,16 @@ public class CommandLineView {
         	 }
         	 else if (choiceAsInt == 10)
         	 {
+        		 //user wished to view statistics
+        		 viewStatistics(controller, con);
+        	 }
+        	 else if (choiceAsInt == 11)
+        	 {
+        		 //user wished to view awards
+        		 viewAwards(controller, con);
+        	 }
+        	 else if (choiceAsInt == 12)
+        	 {
         		 //driver is adding new car
         		 System.out.println("please enter the info of the new car: ");
         		 System.out.println("Vin #: ");
@@ -473,7 +527,7 @@ public class CommandLineView {
         		 
         		 
         	 }
-        	 else if (choiceAsInt == 11)
+        	 else if (choiceAsInt == 13)
         	 {	 
         		 //driver is editing an existing car
         		 System.out.println("Vin # of Car you wish to edit: ");
@@ -505,7 +559,7 @@ public class CommandLineView {
         		 }
 
         	 }
-        	 else if (choiceAsInt == 12)
+        	 else if (choiceAsInt == 14)
         	 {	 
         		 //driver is choosing availability times
         		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
@@ -1050,6 +1104,103 @@ public class CommandLineView {
 	    	 else
 	    	 {
 	    		 return false;
+	    	 }
+	     }
+	}
+	private static void viewStatistics(UberController controller, Connector2 con) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+	    	 displayStatisticChoices();
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 1 || choiceAsInt > 3)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 else if(choiceAsInt == 1)
+	    	 {
+	    		 String m = "";
+	    		 //user wants to see most popular cars per cat.
+	    		 System.out.println("How many cars do you wish to see listed per category?");
+        		 while ((m = in.readLine()) == null && m.length() == 0)
+        			 System.out.println(m);
+	    		 displayStatistics(controller.statisticsGetMostRiddenCars(m, con), "pop", m);
+	    		 break;
+	    			 
+	    	 }
+	    	 else if(choiceAsInt == 2)
+	    	 {
+	    		 //user wants to see most expensive cars per cat.
+	    		 String m = "";
+	    		 System.out.println("How many cars do you wish to see listed per category?");
+        		 while ((m = in.readLine()) == null && m.length() == 0)
+        			 System.out.println(m);
+        		 displayStatistics(controller.statisticsGetMostExpensiveCars(m, con), "exp", m);
+        		 break;
+	    	 }
+	    	 else if(choiceAsInt == 3)
+	    	 {
+	    		 //user wants to see highly rated drivers per cat.
+	    		 String m = "";
+	    		 System.out.println("How many drivers do you wish to see listed per category?");
+        		 while ((m = in.readLine()) == null && m.length() == 0)
+        			 System.out.println(m);
+        		 break;
+	    	 }
+	     }
+	}
+	private static void viewAwards(UberController controller, Connector2 con) throws IOException
+	{
+		String choice;
+        int choiceAsInt = 0;
+	 
+	     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+	     
+	     while(true)
+	     {
+	    	 displayAwardChoices();
+	    	 while ((choice = in.readLine()) == null && choice.length() == 0);
+	    	 try{
+	    		 choiceAsInt = Integer.parseInt(choice);
+	    	 }catch (Exception e)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 if(choiceAsInt < 1 || choiceAsInt > 2)
+	    	 {
+	    		 continue;
+	    	 }
+	    	 else if(choiceAsInt == 1)
+	    	 {
+	    		 //view most trusted users
+	    		 String m = "";
+	    		 System.out.println("How many users do you wish to be listed?");
+        		 while ((m = in.readLine()) == null && m.length() == 0)
+        			 System.out.println(m);
+        		 displayUserAwards(controller.awardGetMostTrusted(m, con), "trust", m);
+	    		 break;
+	    			 
+	    	 }
+	    	 else if(choiceAsInt == 2)
+	    	 {
+	    		 //view most useful users
+	    		 String m = "";
+	    		 System.out.println("How many users do you wish to be listed?");
+        		 while ((m = in.readLine()) == null && m.length() == 0)
+        			 System.out.println(m);
+        		 displayUserAwards(controller.awardGetMostUseful(m, con), "useful", m);
+        		 break;
 	    	 }
 	     }
 	}
