@@ -341,5 +341,46 @@ public class UberController {
 		}
 		return sql.statisticsGetMostExpensiveCars(n, con);
 	}
+	
+	/**
+	 * <p>
+	 * Gets m most most trusted users. Returns ArrayList of Strings in format
+	 * </p><p>
+	 * "(trustedCount) | (user)"
+	 * </p>
+	 * 
+	 * @param String m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> awardGetMostTrusted(String m, Connector2 con) {
+		int n = Integer.parseInt(m);
+		if (n <= 0) {
+			System.out.println("Please enter a positive number");
+			return  null;
+		}
+		return sql.awardGetMostTrusted(n, con);
+	}
+	
+	
+	/**
+	 * <p>
+	 * Gets m most most useful users. Returns ArrayList of Strings in format
+	 * </p><p>
+	 * "(usefulness) | (user)"
+	 * </p>
+	 * 
+	 * @param String m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> awardGetMostUseful(String m, Connector2 con) {
+		int n = Integer.parseInt(m);
+		if (n <= 0) {
+			System.out.println("Please enter a positive number");
+			return  null;
+		}
+		return sql.awardGetMostUseful(n, con);
+	}
 
 }

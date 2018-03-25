@@ -391,7 +391,7 @@ public class UberSQLQuieries {
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, currentUser.get_username());
 	        pstmt.setString(2, otherUser);
-	        pstmt.setInt(3, (isTrusted) ? 1 : 0); // 1 is true, 0 is false
+	        pstmt.setInt(3, (isTrusted) ? 1 : -1); // 1 is true, -1 is false
 		 	System.out.println("executing " + sql);
 	        if(pstmt.executeUpdate() > 0)
 	        {
@@ -1488,6 +1488,100 @@ public class UberSQLQuieries {
 		 	rs = pstmt.executeQuery();
 	        while (rs.next()) {
 	        	output = rs.getInt("avgride") + " | " + rs.getInt("vin") + " | " + rs.getString("category");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * @param m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> awardGetMostTrusted(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select sum(isTrusted) as trustedCount, login2 from trust group by login2 order by trustedCount DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("trustedCount") + " | " + rs.getString("login2");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * @param m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> awardGetMostUseful(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select avg(rates.rating) as usefulness, feedback.login from rates join feedback on rates.fid = feedback.fid group by feedback.login order by usefulness DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getDouble("usefulness") + " | " + rs.getString("login");
 	        	result.add(output);
 	        }
 		}
