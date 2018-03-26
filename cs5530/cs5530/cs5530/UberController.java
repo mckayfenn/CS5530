@@ -423,5 +423,10 @@ public class UberController {
 	}
 	
 	
+	public int degreesOfSeparation(String u1, String u2, Connector2 con) {
+		return sql.degreesOfSeparation(u1, u2, con);
+	}
+	
+	
 
 }
