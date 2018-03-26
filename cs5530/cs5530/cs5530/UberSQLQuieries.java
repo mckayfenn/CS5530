@@ -1096,11 +1096,12 @@ public class UberSQLQuieries {
 			ResultSet rs = null;
 			PreparedStatement pstmt = null;
 			try {
-				String sql = "select F.fid, F.score, F.login, F.text, F.vin, F.fbdate, A.rating from feedback F left outer join (select fid, avg(rating) as rating from rates where fid IN (select fid from feedback where vin = 9999) group by fid) A on F.fid = A.fid where F.vin = ? order by rating DESC limit ?";
+				String sql = "select F.fid, F.score, F.login, F.text, F.vin, F.fbdate, A.rating from feedback F left outer join (select fid, avg(rating) as rating from rates where fid IN (select fid from feedback where vin = ?) group by fid) A on F.fid = A.fid where F.vin = ? order by rating DESC limit ?";
 		 		
 		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 		        pstmt.setInt(1, c.get_vin());
-		        pstmt.setInt(2, limit);
+		        pstmt.setInt(2, c.get_vin());
+		        pstmt.setInt(3, limit);
 			 	System.out.println("executing " + sql);
 			 	rs = pstmt.executeQuery();
 		        while (rs.next()) {
@@ -1771,7 +1772,7 @@ public class UberSQLQuieries {
 			int vin = Integer.parseInt(reserve.get_vin());
 			
 			try {
-				String sql = "select count(ride.vin) as otherRides, car.vin, car.category, car.make, car.model, car.year, car.owner from ride join car on ride.vin = car.vin where login IN (select login from ride where ride.vin = ? and login != '?') and ride.vin != ? group by car.vin order by otherRides DESC";
+				String sql = "select count(ride.vin) as otherRides, car.vin, car.category, car.make, car.model, car.year, car.owner from ride join car on ride.vin = car.vin where login IN (select login from ride where ride.vin = ? and login != ?) and ride.vin != ? group by car.vin order by otherRides DESC";
 		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 		        pstmt.setInt(1, vin);
 		        pstmt.setString(2, currentUser.get_username());
@@ -1847,7 +1848,7 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-			String sql = "select count(*) as count from favorites f1 join favorites f2 on f1.vin = f2.vin where f1.login = '?' and f2.login = '?'";
+			String sql = "select count(*) as count from favorites f1 join favorites f2 on f1.vin = f2.vin where f1.login = ? and f2.login = ?";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, u1);
 	        pstmt.setString(2, u2);
@@ -1859,7 +1860,7 @@ public class UberSQLQuieries {
 		}
         catch(Exception e)
 	 	{
-	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 		System.out.println("cannot execute the query try1 degree: " + e.getMessage());
 	 	}
 		finally
 	 	{
@@ -1886,9 +1887,10 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		try {
-			String sql = "select * from favorites where vin IN (select vin from favorites where login = '?') and login != '?'";
+			String sql = "select * from favorites where vin IN (select vin from favorites where login = ?) and login != ?";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, u);
+	        pstmt.setString(2, u);
 		 	System.out.println("executing " + sql);
 		 	rs = pstmt.executeQuery();
 	        while (rs.next()) {

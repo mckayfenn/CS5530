@@ -277,6 +277,13 @@ public class UberController {
 	 */
 	public ArrayList<Feedback> getFeedbackOnDriver(User u, int limit, Connector2 con) {
 		feedbackList = sql.getFeedbackOnDriver(u, limit, con);
+		Collections.sort(feedbackList, new Comparator<Feedback>() {
+	        public int compare(Feedback c1, Feedback c2) {
+	            return (int) (c2.get_rating() - c1.get_rating()); // Ascending
+	        }
+	
+	    });
+		
 		return feedbackList;
 	}
 	
@@ -414,7 +421,7 @@ public class UberController {
 		// sort the list of cars by the count of rides taken by other users.
 	    Collections.sort(cars, new Comparator<Car>() {
 	        public int compare(Car c1, Car c2) {
-	            return c1.get_otherRideCount() - c2.get_otherRideCount(); // Ascending
+	            return c2.get_otherRideCount() - c1.get_otherRideCount(); // Ascending
 	        }
 	
 	    });

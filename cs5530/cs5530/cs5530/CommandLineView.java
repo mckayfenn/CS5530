@@ -70,7 +70,7 @@ public class CommandLineView {
 		System.out.println("Suggested cars: ");
 		for(int i = 0; i < list.size(); i++)
 		{
-			System.out.println(list.get(i));
+			System.out.println("# of Rides: " + list.get(i).get_otherRideCount() + "   Driver: " + list.get(i).get_owner() + "  Vin #: " + list.get(i).get_vin() + "  - " + list.get(i).get_make() + "  " + list.get(i).get_model() + "  " + list.get(i).get_year());
 		}
 	}
 	public static void displayCategoryOptions()
@@ -507,8 +507,8 @@ public class CommandLineView {
         		 while ((username2 = in.readLine()) == null && username2.length() == 0)
         			 System.out.println(username2);
         		 
-//        		 System.out.println("Degree of seperation between " + username1 + "and " + username2 + 
-//        				 " = " + controller.usersForDegSep(username1, username2));
+        		 System.out.println("Degree of seperation between " + username1 + " and " + username2 + 
+        				 " = " + controller.degreesOfSeparation(username1, username2, con));
         	 }
         	 else if (choiceAsInt == 13)
         	 {
@@ -729,8 +729,8 @@ public class CommandLineView {
 	    		 //confirm all resverations
 	    		 if(controller.setReservations(con))
 	    		 {
-	    			 controller.getReservations().clear();
 		    		 displaySuggestions(controller.getUCSuggestions(con));
+		    		 controller.getReservations().clear();
 	    			 if(waitDone()) {break;}
 	    		 }
 	    		 else 
