@@ -66,6 +66,13 @@ public class CommandLineView {
 					" Model: " + list.get(i).get_model() + " Year: " + list.get(i).get_year()+ "\n");
 		}
 	}
+	public static void displaySuggestions(ArrayList<Car> list) {
+		System.out.println("Suggested cars: ");
+		for(int i = 0; i < list.size(); i++)
+		{
+			System.out.println(list.get(i));
+		}
+	}
 	public static void displayCategoryOptions()
 	{
 		System.out.println("Pick a Category: ");
@@ -135,12 +142,13 @@ public class CommandLineView {
     	 System.out.println("9. Search for car");
     	 System.out.println("10. View Statistics");
     	 System.out.println("11. User awards");
+    	 System.out.println("12. Check degree of separtation between 2 users");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("12. Add new car");
-	    	 System.out.println("13. Edit exisiting car");
-	    	 System.out.println("14. Add availability times");
+	    	 System.out.println("13. Add new car");
+	    	 System.out.println("14. Edit exisiting car");
+	    	 System.out.println("15. Add availability times");
 		 }
 
 	}
@@ -485,6 +493,21 @@ public class CommandLineView {
         	 }
         	 else if (choiceAsInt == 12)
         	 {
+        		 String username1 = "";
+        		 String username2 = "";
+        		 //check degree of separation
+        		 System.out.println("Username/login of first user: ");
+        		 while ((username1 = in.readLine()) == null && username1.length() == 0)
+        			 System.out.println(username1);
+        		 System.out.println("Username/login of second user: ");
+        		 while ((username2 = in.readLine()) == null && username2.length() == 0)
+        			 System.out.println(username2);
+        		 
+        		 System.out.println("Degree of seperation between " + username1 + "and " + username2 + 
+        				 " = " + controller.usersForDegSep(username1, username2));
+        	 }
+        	 else if (choiceAsInt == 13)
+        	 {
         		 //driver is adding new car
         		 System.out.println("please enter the info of the new car: ");
         		 System.out.println("Vin #: ");
@@ -527,7 +550,7 @@ public class CommandLineView {
         		 
         		 
         	 }
-        	 else if (choiceAsInt == 13)
+        	 else if (choiceAsInt == 14)
         	 {	 
         		 //driver is editing an existing car
         		 System.out.println("Vin # of Car you wish to edit: ");
@@ -559,7 +582,7 @@ public class CommandLineView {
         		 }
 
         	 }
-        	 else if (choiceAsInt == 14)
+        	 else if (choiceAsInt == 15)
         	 {	 
         		 //driver is choosing availability times
         		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
@@ -702,6 +725,7 @@ public class CommandLineView {
 	    		 //confirm all resverations
 	    		 controller.setReservations(con);
 	    		 controller.getReservations().clear();
+	    		 displaySuggestions();
 	    		 break;
 	    		 
 	    	 }
