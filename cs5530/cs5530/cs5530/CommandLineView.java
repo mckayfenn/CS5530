@@ -107,6 +107,10 @@ public class CommandLineView {
 		{
 			System.out.println("Top" + m + " most expensive cars for each category: ");
 		}
+		else if(type.equals("driv"))
+		{
+			System.out.println("Top" + m + " most higly rated driver for each category: ");
+		}
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println(list.get(i) + "\n");
 		}
@@ -503,8 +507,8 @@ public class CommandLineView {
         		 while ((username2 = in.readLine()) == null && username2.length() == 0)
         			 System.out.println(username2);
         		 
-        		 System.out.println("Degree of seperation between " + username1 + "and " + username2 + 
-        				 " = " + controller.usersForDegSep(username1, username2));
+//        		 System.out.println("Degree of seperation between " + username1 + "and " + username2 + 
+//        				 " = " + controller.usersForDegSep(username1, username2));
         	 }
         	 else if (choiceAsInt == 13)
         	 {
@@ -725,7 +729,7 @@ public class CommandLineView {
 	    		 //confirm all resverations
 	    		 controller.setReservations(con);
 	    		 controller.getReservations().clear();
-	    		 displaySuggestions();
+	    		 //displaySuggestions();
 	    		 break;
 	    		 
 	    	 }
@@ -1180,6 +1184,7 @@ public class CommandLineView {
 	    		 System.out.println("How many drivers do you wish to see listed per category?");
         		 while ((m = in.readLine()) == null && m.length() == 0)
         			 System.out.println(m);
+        		 displayStatistics(controller.statisticsGetHighlyRatedDrivers(m, con), "driv", m);
         		 break;
 	    	 }
 	     }
