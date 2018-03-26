@@ -82,7 +82,7 @@ public class CommandLineView {
 	}
 	public static void displayFilterByTrusted()
 	{
-	   	System.out.println("1. Filter results only based on trusted user reviews");
+	   	System.out.println("1. Filter results based on trusted user reviews");
 	   	System.out.println("2. Show all results reguardless of user reviews");
 	}
 	public static void displayAwardChoices()
@@ -1047,11 +1047,38 @@ public class CommandLineView {
 	    		 //user wants to conduct search
 	    		 if(filterByTrustedUsers())
 	    		 {
-	    			 displayCars(controller.getCarsBySearch(address, make, category, true, con));
+	    			 String andOROR = "";
+	    			 System.out.println("Do you want to AND or OR your filter(s)? (Type: 'AND'/'OR'): ");
+	    			 System.out.println("OR will broaden your search based on filter(s) selected. AND will constrain your search based on filter(s) selected: ");
+    				 while ((andOROR = in.readLine()) == null && andOROR.length() == 0)
+    					System.out.println(andOROR);
+    				 if(andOROR.toUpperCase().equals("AND") || andOROR.toUpperCase().equals("OR"))
+    				 {
+    					 displayCars(controller.getCarsBySearch(address, make, category, true, andOROR, con));
+    				 }
+    				 else
+    				 {
+    					 System.out.println("PLEASE type only 'AND' or 'OR'. Try again.");
+    					 continue;
+    				 }
+	    			 
 	    		 }
 	    		 else
 	    		 {
-	    			 displayCars(controller.getCarsBySearch(address, make, category, false, con));
+	    			 String andOROR = "";
+	    			 System.out.println("Do you want to AND or OR your filter(s)? (Type: 'AND'/'OR'): ");
+	    			 System.out.println("OR will broaden your search based on filter(s) selected. AND will constrain your search based on filter(s) selected: ");
+    				 while ((andOROR = in.readLine()) == null && andOROR.length() == 0)
+    					System.out.println(andOROR);
+    				 if(andOROR.toUpperCase().equals("AND") || andOROR.toUpperCase().equals("OR"))
+	   				 {
+	   					 displayCars(controller.getCarsBySearch(address, make, category, false, andOROR, con));
+	   				 }
+	   				 else
+	   				 {
+	   					 System.out.println("PLEASE type only 'AND' or 'OR'. Try again.");
+	   					 continue;
+	   				 }
 	    		 }
 	    		 if(waitDone()) {break;}
 	    		 
@@ -1059,7 +1086,7 @@ public class CommandLineView {
 			 else if(choiceAsInt == 2) {
 				//user wants to add more filters
 				 conductCarSearch(controller, con, make, address, category);
-				 if(waitDone()) {break;}
+				 break;
 				 
 			 }
 			 else if(choiceAsInt == 3) {

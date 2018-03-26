@@ -296,7 +296,7 @@ public class UberController {
 	 * @param con
 	 * @return
 	 */
-	public ArrayList<Car> getCarsBySearch(String address, String make, String category, boolean wantsTrusted, Connector2 con) {
+	public ArrayList<Car> getCarsBySearch(String address, String make, String category, boolean wantsTrusted, String ANDOrOR, Connector2 con) {
 		ArrayList<Car> result;
 		if (address == null)
 			address = "";
@@ -305,9 +305,9 @@ public class UberController {
 		if (category == null)
 			category = "";
 		if (wantsTrusted)
-			result = sql.getCarsBySearchTrusted(currentUser, address, make, category, con);
+			result = sql.getCarsBySearchTrusted(currentUser, address, make, category, ANDOrOR, con);
 		else
-			result = sql.getCarsBySearch(currentUser, address, make, category, con);
+			result = sql.getCarsBySearch(currentUser, address, make, category, ANDOrOR, con);
 		return result;
 	}
 	
