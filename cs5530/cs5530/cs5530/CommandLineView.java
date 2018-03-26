@@ -101,15 +101,15 @@ public class CommandLineView {
 	{
 		if(type.equals("pop"))
 		{
-			System.out.println("Top" + m + " most popular cars for each category: ");
+			System.out.println("Top " + m + " most popular cars for each category: \n");
 		}
 		else if(type.equals("exp"))
 		{
-			System.out.println("Top" + m + " most expensive cars for each category: ");
+			System.out.println("Top " + m + " most expensive cars for each category: \\n");
 		}
 		else if(type.equals("driv"))
 		{
-			System.out.println("Top" + m + " most higly rated driver for each category: ");
+			System.out.println("Top " + m + " most higly rated driver for each category:\\n ");
 		}
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println(list.get(i) + "\n");
@@ -388,7 +388,7 @@ public class CommandLineView {
         		 
         		 continue;
         	 }
-        	 if (choiceAsInt < 1 | choiceAsInt > 14)
+        	 if (choiceAsInt < 1 | choiceAsInt > 15)
         		 continue;
         	 if (choiceAsInt == 2) {
         		 // driver is declaring a car as their favorite
@@ -727,10 +727,17 @@ public class CommandLineView {
 	    	 else if (choiceAsInt == 1)
 	    	 {
 	    		 //confirm all resverations
-	    		 controller.setReservations(con);
-	    		 controller.getReservations().clear();
-	    		 //displaySuggestions();
-	    		 break;
+	    		 if(controller.setReservations(con))
+	    		 {
+	    			 controller.getReservations().clear();
+		    		 displaySuggestions(controller.getUCSuggestions(con));
+	    			 if(waitDone()) {break;}
+	    		 }
+	    		 else 
+	    		 {
+	    			 System.out.println("Failed to execute confirmation(s)");
+	    			 continue;
+	    		 }
 	    		 
 	    	 }
 	    	 else if (choiceAsInt == 2)
@@ -822,7 +829,7 @@ public class CommandLineView {
 	    		 //confirm all rides
 	    		 controller.setRides(con);
 	    		 controller.getRides().clear();
-	    		 break;
+	    		 if(waitDone()) {break;}
 	    		 
 	    	 }
 	    	 else if (choiceAsInt == 2)
@@ -937,7 +944,7 @@ public class CommandLineView {
 	    				 displayDriverFeedback(feedback, n, list.get(i));
 	    			 }
 	    		 }
-	    		 break;
+	    		 if(waitDone()) {break;}
 	    	 }
 	     }
 	}
@@ -1046,18 +1053,18 @@ public class CommandLineView {
 	    		 {
 	    			 displayCars(controller.getCarsBySearch(address, make, category, false, con));
 	    		 }
-	    		 break;
+	    		 if(waitDone()) {break;}
 	    		 
 	    	 }
 			 else if(choiceAsInt == 2) {
 				//user wants to add more filters
 				 conductCarSearch(controller, con, make, address, category);
-				 break;
+				 if(waitDone()) {break;}
 				 
 			 }
 			 else if(choiceAsInt == 3) {
 				 //user wants to cancel search
-				 return;
+				 break;
 			 }
 	     }
 	}
@@ -1164,7 +1171,7 @@ public class CommandLineView {
         		 while ((m = in.readLine()) == null && m.length() == 0)
         			 System.out.println(m);
 	    		 displayStatistics(controller.statisticsGetMostRiddenCars(m, con), "pop", m);
-	    		 break;
+	    		 if(waitDone()) {break;}
 	    			 
 	    	 }
 	    	 else if(choiceAsInt == 2)
@@ -1175,7 +1182,7 @@ public class CommandLineView {
         		 while ((m = in.readLine()) == null && m.length() == 0)
         			 System.out.println(m);
         		 displayStatistics(controller.statisticsGetMostExpensiveCars(m, con), "exp", m);
-        		 break;
+        		 if(waitDone()) {break;}
 	    	 }
 	    	 else if(choiceAsInt == 3)
 	    	 {
@@ -1185,7 +1192,7 @@ public class CommandLineView {
         		 while ((m = in.readLine()) == null && m.length() == 0)
         			 System.out.println(m);
         		 displayStatistics(controller.statisticsGetHighlyRatedDrivers(m, con), "driv", m);
-        		 break;
+        		 if(waitDone()) {break;}
 	    	 }
 	     }
 	}
@@ -1218,7 +1225,7 @@ public class CommandLineView {
         		 while ((m = in.readLine()) == null && m.length() == 0)
         			 System.out.println(m);
         		 displayUserAwards(controller.awardGetMostTrusted(m, con), "trust", m);
-	    		 break;
+	    		 if(waitDone()) {break;}
 	    			 
 	    	 }
 	    	 else if(choiceAsInt == 2)
@@ -1229,7 +1236,7 @@ public class CommandLineView {
         		 while ((m = in.readLine()) == null && m.length() == 0)
         			 System.out.println(m);
         		 displayUserAwards(controller.awardGetMostUseful(m, con), "useful", m);
-        		 break;
+        		 if(waitDone()) {break;}
 	    	 }
 	     }
 	}
@@ -1245,5 +1252,29 @@ public class CommandLineView {
 		}
 		java.sql.Date sqlDate = new java.sql.Date(date.getTime());  
 		return sqlDate;
+	}
+	private static boolean waitDone() throws IOException
+	{
+		String choice = "";
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println("Type 'exit' if finished: ");
+		while ((choice = in.readLine()) == null && choice.length() == 0)
+			System.out.println(choice);
+		if(!choice.equals(""))
+		{
+			if(choice.equals("exit") || choice.equals("Exit"))
+			{
+				return true;
+			}
+			else
+			{
+				waitDone();
+			}
+		}
+		else
+		{
+			waitDone();
+		}
+		return false;
 	}
 }
