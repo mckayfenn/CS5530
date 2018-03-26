@@ -1770,7 +1770,6 @@ public class UberSQLQuieries {
 		for (Reservation reserve : reservations) {
 			int vin = Integer.parseInt(reserve.get_vin());
 			
-			
 			try {
 				String sql = "select count(ride.vin) as otherRides, car.vin, car.category, car.make, car.model, car.year, car.owner from ride join car on ride.vin = car.vin where login IN (select login from ride where ride.vin = ? and login != '?') and ride.vin != ? group by car.vin order by otherRides DESC";
 		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
@@ -1818,13 +1817,104 @@ public class UberSQLQuieries {
 		 			System.out.println("cannot close resultset");
 		 		}
 		 	}
-			
-			
-			
 		}
 		
+		return result;
+	}
+	
+	
+	
+	
+	public int degreesOfSeparation(String u1, String u2, Connector2 con) {
+		int oneDegree = try1Degree(u1, u2, con);
+		if (oneDegree == 1)
+			return oneDegree;
 		
+		ArrayList<String> favoritedU1 = getFavoritedOf(u1, con);
+		ArrayList<String> favoritedU2 = getFavoritedOf(u2, con);
 		
+		for (String s : favoritedU1) {
+			if (favoritedU2.contains(s))
+				return 2;
+		}
+		
+		return 0;
+	}
+	private int try1Degree(String u1, String u2, Connector2 con) {
+		
+		int result = 0;
+		
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select count(*) as count from favorites f1 join favorites f2 on f1.vin = f2.vin where f1.login = '?' and f2.login = '?'";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, u1);
+	        pstmt.setString(2, u2);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	result = rs.getInt("count");
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	private ArrayList<String> getFavoritedOf(String u, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select * from favorites where vin IN (select vin from favorites where login = '?') and login != '?'";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setString(1, u);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getString("login");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
 		
 		return result;
 	}
