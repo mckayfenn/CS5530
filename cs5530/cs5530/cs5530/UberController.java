@@ -2,6 +2,8 @@ package cs5530;
 
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.mysql.jdbc.Connection;
 
@@ -399,6 +401,26 @@ public class UberController {
 		return sql.awardGetMostUseful(n, con);
 	}
 	
+	
+	/**
+	 * 
+	 * @param vin
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<Car> getUCSuggestions(Connector2 con) {
+		ArrayList<Car> cars = sql.getUCSuggestions(currentUser, reservations, con);
+
+		// sort the list of cars by the count of rides taken by other users.
+	    Collections.sort(cars, new Comparator<Car>() {
+	        public int compare(Car c1, Car c2) {
+	            return c1.get_otherRideCount() - c2.get_otherRideCount(); // Ascending
+	        }
+	
+	    });
+		
+		return cars;
+	}
 	
 	
 

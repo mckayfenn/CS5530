@@ -1750,5 +1750,83 @@ public class UberSQLQuieries {
 		
 		return result;
 	}
+	
+	
+	/**
+	 * 
+	 * @param currentUser
+	 * @param vin
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<Car> getUCSuggestions(User currentUser, ArrayList<Reservation> reservations, Connector2 con) {
+		ArrayList<Car> result = new ArrayList<Car>();
+		ArrayList<String> carVins = new ArrayList<String>();
+		
+		
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		
+		for (Reservation reserve : reservations) {
+			int vin = Integer.parseInt(reserve.get_vin());
+			
+			
+			try {
+				String sql = "select count(ride.vin) as otherRides, car.vin, car.category, car.make, car.model, car.year, car.owner from ride join car on ride.vin = car.vin where login IN (select login from ride where ride.vin = ? and login != '?') and ride.vin != ? group by car.vin order by otherRides DESC";
+		        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+		        pstmt.setInt(1, vin);
+		        pstmt.setString(2, currentUser.get_username());
+		        pstmt.setInt(3, vin);
+			 	System.out.println("executing " + sql);
+			 	rs = pstmt.executeQuery();
+		        while (rs.next()) {
+		        	
+		        	if (carVins.contains(Integer.toString(rs.getInt("vin")))) {
+		        		for (Car c : result) {
+		        			if (c.get_vin() == (rs.getInt("vin"))) {
+		        				c.set_otherRideCount(c.get_otherRideCount() + 1);
+		        			}
+		        		}
+		        	}
+		        	else {
+		        	
+			        	Car c = new Car(rs.getInt("vin"), rs.getString("category"), rs.getString("model"), rs.getString("make"), rs.getInt("year"), rs.getString("owner"));
+			        	c.set_otherRideCount(rs.getInt("otherRides"));
+			        	
+			        	result.add(c);
+		        	}
+		        	
+		        	carVins.add(Integer.toString(rs.getInt("vin")));
+		        }
+			}
+	        catch(Exception e)
+		 	{
+		 		System.out.println("cannot execute the query: " + e.getMessage());
+		 	}
+			finally
+		 	{
+		 		try{
+			 		if (rs!=null && !rs.isClosed()) {
+			 			rs.close();
+			 		}
+			 		if(pstmt != null) {
+				 		pstmt.close();
+			 		}
+		 		}
+		 		catch(Exception e)
+		 		{
+		 			System.out.println("cannot close resultset");
+		 		}
+		 	}
+			
+			
+			
+		}
+		
+		
+		
+		
+		return result;
+	}
 
 }

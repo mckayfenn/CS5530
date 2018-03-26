@@ -11,6 +11,8 @@ public class Car {
 	
 	private double _avgFeedbackScore;
 	
+	private int _otherRideCount;
+	
 	public Car(int vin, String category, String model, String make, int year, String owner) {
 		this.set_vin(vin);
 		this.set_category(category);
@@ -66,6 +68,16 @@ public class Car {
 
 	public void set_avgFeedbackScore(double _avgFeedbackScore) {
 		this._avgFeedbackScore = _avgFeedbackScore;
+	}
+
+
+	public int get_otherRideCount() {
+		return _otherRideCount;
+	}
+
+
+	public void set_otherRideCount(int _otherRideCount) {
+		this._otherRideCount = _otherRideCount;
 	}
 	
 	
