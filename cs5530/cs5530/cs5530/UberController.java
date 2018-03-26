@@ -342,6 +342,22 @@ public class UberController {
 		return sql.statisticsGetMostExpensiveCars(n, con);
 	}
 	
+	
+	/**
+	 * <p>
+	 * Gets m most highly rated drivers per category. Returns ArrayList of Strings in format
+	 * </p><p>
+	 * "(avgscore) | (driver)"
+	 * </p>
+	 * 
+	 * @param String m
+	 * @param con
+	 * @return
+	 */
+	public ArrayList<String> statisticsGetHighlyRatedDrivers(String m, Connector2 con) {
+		return sql.statisticsGetHighlyRatedDrivers(Integer.parseInt(m), con);
+	}
+	
 	/**
 	 * <p>
 	 * Gets m most most trusted users. Returns ArrayList of Strings in format
@@ -382,5 +398,8 @@ public class UberController {
 		}
 		return sql.awardGetMostUseful(n, con);
 	}
+	
+	
+	
 
 }

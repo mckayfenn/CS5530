@@ -1527,6 +1527,143 @@ public class UberSQLQuieries {
 	 * @param con
 	 * @return
 	 */
+	public ArrayList<String> statisticsGetHighlyRatedDrivers(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+	
+		result.add("Luxury");
+		result.addAll(getHighlyRatedLuxury(m, con));
+		result.add("Comfort");
+		result.addAll(getHighlyRatedComfort(m, con));
+		result.add("Standard");
+		result.addAll(getHighlyRatedStandard(m, con));
+		
+		return result;
+	}
+	private ArrayList<String> getHighlyRatedLuxury(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select avg(feedback.score) as avgscore, car.owner as driver from feedback join car on feedback.vin = car.vin where car.category = 'Luxury' group by car.owner order by avgscore DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("avgscore") + " | " + rs.getString("driver");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	private ArrayList<String> getHighlyRatedComfort(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select avg(feedback.score) as avgscore, car.owner as driver from feedback join car on feedback.vin = car.vin where car.category = 'Comfort' group by car.owner order by avgscore DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("avgscore") + " | " + rs.getString("driver");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	private ArrayList<String> getHighlyRatedStandard(int m, Connector2 con) {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String output = "";
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try {
+			String sql = "select avg(feedback.score) as avgscore, car.owner as driver from feedback join car on feedback.vin = car.vin where car.category = 'Standard' group by car.owner order by avgscore DESC limit ?";
+	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
+	        pstmt.setInt(1, m);
+		 	System.out.println("executing " + sql);
+		 	rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	        	output = rs.getInt("avgscore") + " | " + rs.getString("driver");
+	        	result.add(output);
+	        }
+		}
+        catch(Exception e)
+	 	{
+	 		System.out.println("cannot execute the query: " + e.getMessage());
+	 	}
+		finally
+	 	{
+	 		try{
+		 		if (rs!=null && !rs.isClosed()) {
+		 			rs.close();
+		 		}
+		 		if(pstmt != null) {
+			 		pstmt.close();
+		 		}
+	 		}
+	 		catch(Exception e)
+	 		{
+	 			System.out.println("cannot close resultset");
+	 		}
+	 	}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * @param m
+	 * @param con
+	 * @return
+	 */
 	public ArrayList<String> awardGetMostTrusted(int m, Connector2 con) {
 		ArrayList<String> result = new ArrayList<String>();
 		
