@@ -133,9 +133,10 @@ public class UberSQLQuieries {
 		ResultSet rs = null;
 		String receivedLogin = null;
 		String receivedPass = null;
+		int isAdmin = 0;
 		PreparedStatement pstmt = null;
 		try {
-	 		String sql = "SELECT login, password from user where login = ?" +  " and password = ?";
+	 		String sql = "SELECT login, password, isAdmin from user where login = ?" +  " and password = ?";
 	        pstmt = (PreparedStatement) con.conn.prepareStatement(sql);
 	        pstmt.setString(1, login);
 	        pstmt.setString(2, password);
@@ -144,6 +145,7 @@ public class UberSQLQuieries {
 	        while (rs.next()) {
 	        	receivedLogin = rs.getString("login");
 	        	receivedPass = rs.getString("password");
+	        	isAdmin = rs.getInt("isAdmin");
 	        }
 	 	}
 	 	catch(Exception e)
@@ -170,7 +172,11 @@ public class UberSQLQuieries {
 		if (receivedLogin != null && receivedPass != null) {
 			System.out.println("check if driver");
 			boolean isDriver = checkIfDriver(receivedLogin, con);
-			u = new User(receivedLogin, receivedPass, isDriver);
+			//u = new User(receivedLogin, receivedPass, isDriver);
+			if(isAdmin == 0)
+				u = new User(receivedLogin, receivedPass, isDriver, false);
+			else
+				u = new User(receivedLogin, receivedPass, isDriver, true);
         	return u;
 		}
 		

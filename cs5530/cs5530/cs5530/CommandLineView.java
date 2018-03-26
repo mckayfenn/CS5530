@@ -131,7 +131,7 @@ public class CommandLineView {
 		}
 						
 	}
-	public static void displayUserMenu(String username, boolean isDriver)
+	public static void displayUserMenu(String username, boolean isDriver, boolean isAdmin)
 	{
 		 System.out.println("Welcome: " + username + ". Please select from the following: ");
     	 System.out.println("User options: ");
@@ -145,14 +145,17 @@ public class CommandLineView {
     	 System.out.println("8. View most useful feedbacks on driver");
     	 System.out.println("9. Search for car");
     	 System.out.println("10. View Statistics");
-    	 System.out.println("11. User awards");
-    	 System.out.println("12. Check degree of separtation between 2 users");
+    	 System.out.println("11. Check degree of separtation between 2 users");
 
 		 if(isDriver) {
 	    	 System.out.println("Driver options: ");
-	    	 System.out.println("13. Add new car");
-	    	 System.out.println("14. Edit exisiting car");
-	    	 System.out.println("15. Add availability times");
+	    	 System.out.println("12. Add new car");
+	    	 System.out.println("13. Edit exisiting car");
+	    	 System.out.println("14. Add availability times");
+		 }
+		 if(isAdmin)
+		 {
+			 System.out.println("15. User awards");
 		 }
 
 	}
@@ -379,7 +382,7 @@ public class CommandLineView {
          
          while(true)
          {
-        	 displayUserMenu(user.get_username(), user.get_isDriver());
+        	 displayUserMenu(user.get_username(), user.get_isDriver(), user.get_isAdmin());
         	 while ((choice = in.readLine()) == null && choice.length() == 0);
         	 try{
         		 choiceAsInt = Integer.parseInt(choice);
@@ -492,11 +495,6 @@ public class CommandLineView {
         	 }
         	 else if (choiceAsInt == 11)
         	 {
-        		 //user wished to view awards
-        		 viewAwards(controller, con);
-        	 }
-        	 else if (choiceAsInt == 12)
-        	 {
         		 String username1 = "";
         		 String username2 = "";
         		 //check degree of separation
@@ -510,7 +508,7 @@ public class CommandLineView {
         		 System.out.println("Degree of seperation between " + username1 + " and " + username2 + 
         				 " = " + controller.degreesOfSeparation(username1, username2, con));
         	 }
-        	 else if (choiceAsInt == 13)
+        	 else if (choiceAsInt == 12)
         	 {
         		 //driver is adding new car
         		 System.out.println("please enter the info of the new car: ");
@@ -554,7 +552,7 @@ public class CommandLineView {
         		 
         		 
         	 }
-        	 else if (choiceAsInt == 14)
+        	 else if (choiceAsInt == 13)
         	 {	 
         		 //driver is editing an existing car
         		 System.out.println("Vin # of Car you wish to edit: ");
@@ -586,10 +584,15 @@ public class CommandLineView {
         		 }
 
         	 }
-        	 else if (choiceAsInt == 15)
+        	 else if (choiceAsInt == 14)
         	 {	 
         		 //driver is choosing availability times
         		 selectAvailability(user,controller, con, controller.driverViewPeriods(con), false, null);
+        	 }
+        	 else if (choiceAsInt == 15)
+        	 {
+        		 //admin user wished to view awards
+        		 viewAwards(controller, con);
         	 }
         	 else
         	 {   

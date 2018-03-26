@@ -7,6 +7,7 @@ public class User {
 	private String _password;
 	private boolean _isDriver;
 	private String _fullname;
+	private boolean _isAdmin = false;
 	
 	private ArrayList<Car> _cars;
 	
@@ -18,6 +19,12 @@ public class User {
 		this.set_username(username);
 		this.set_password(password);
 		this.set_isDriver(isDriver);
+	}
+	public User(String username, String password, boolean isDriver, boolean isAdmin) {
+		this.set_username(username);
+		this.set_password(password);
+		this.set_isDriver(isDriver);
+		this.set_isAdmin(isAdmin);
 	}
 
 	public String get_username() {
@@ -63,5 +70,13 @@ public class User {
 
 	public void set_fullname(String _fullname) {
 		this._fullname = _fullname;
+	}
+
+	public boolean get_isAdmin() {
+		return _isAdmin;
+	}
+
+	public void set_isAdmin(boolean _isAdmin) {
+		this._isAdmin = _isAdmin;
 	}
 }
